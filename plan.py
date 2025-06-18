@@ -80,7 +80,7 @@ class StockPlan(ModelSQL, ModelView):
                     if stocks[key] <= 0:
                         stocks.pop(key)
 
-                    lines.append(StockPlanLine(plan=plan, quantity=quantity, origin=warehouse, destination=move))
+                    lines.append(StockPlanLine(plan=plan, quantity=quantity, origin=warehouse, destination=move, product=move.product))
 
                 if (move_quantity - 0) == 0:
                     continue
@@ -96,19 +96,19 @@ class StockPlan(ModelSQL, ModelView):
                     if income.quantity <= 0:
                         incoming[key].remove(income)
 
-                    lines.append(StockPlanLine(plan=plan, quantity=quantity, origin=income.move, destination=move))
+                    lines.append(StockPlanLine(plan=plan, quantity=quantity, origin=income.move, destination=move, product=move.product))
 
                 if move_quantity > 0:
-                    lines.append(StockPlanLine(plan=plan, quantity=move_quantity, destination=move)) # TODO: Void line: Without origin
+                    lines.append(StockPlanLine(plan=plan, quantity=move_quantity, destination=move, product=move.product)) # TODO: Void line: Without origin
 
             lines.extend([
-                StockPlanLine(plan=plan, quantity=stock_quantity, origin=warehouse) # TODO: Void line: Without destination
+                StockPlanLine(plan=plan, quantity=stock_quantity, origin=warehouse, product=Product(key[1])) # TODO: Void line: Without destination
                 for key, stock_quantity in stocks.items()
                 if key[0] == warehouse.id
             ])
 
         lines.extend([
-            StockPlanLine(plan=plan, quantity=income.quantity, origin=income.move) # TODO: Void line: Without destination
+            StockPlanLine(plan=plan, quantity=income.quantity, origin=income.move, product=income.move.product) # TODO: Void line: Without destination
             for incomes in incoming.values()
             for income in incomes
         ])
@@ -130,8 +130,8 @@ class StockPlanLine(ModelSQL, ModelView):
     origin = fields.Reference('Origin Move', 'get_origin')
     plan = fields.Many2One('stock.plan', 'Stock Plan',
         required=True, ondelete='CASCADE')
-    product = fields.Function( # TODO: This may not be a fields.Function, but a fields.Many2One
-        fields.Many2One('product.product', 'Product'), 'get_product')
+    product = fields.Many2One('product.product', 'Product',
+        required=True, ondelete='SET NULL') # FIXME: ondelete='RESTRICT'?
     quantity = fields.Integer('Quantity', required=True)
 #    uom = fields.Many2One('product.uom', 'Quantity UoM',
 #        help='The Unit of Measure for the quantities.', required=True)
@@ -159,11 +159,3 @@ class StockPlanLine(ModelSQL, ModelView):
             origin = self.origin.effective_date or self.origin.planned_date or timedelta(0)
 
         return destination - origin
-
-    def get_product(self, name):
-        if self.destination:
-            return self.destination.product
-        elif self.origin and hasattr(self.origin, 'product'):
-            return self.origin.product
-        else:
-            return None
