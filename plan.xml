@@ -87,6 +87,36 @@
             <field name="act_window" ref="act_stock_plan_line" />
         </record>
 
+            <!-- Tabs -->
+        <record model="ir.action.act_window.domain" id="act_stock_plan_line_domain_without_stock">
+            <field name="name">Without Stock</field>
+            <field name="sequence" eval="10"/>
+            <field name="domain" eval="[('origin', '=', None)]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_stock_plan_line"/>
+        </record>
+<!--        <record model="ir.action.act_window.domain" id="act_stock_plan_line_domain_late_stock">
+            <field name="name">Late Stock</field>
+            <field name="sequence" eval="20"/>
+            <field name="domain" eval="[('TODO:', '=', None)]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_stock_plan_line"/>
+        </record>
+-->        <record model="ir.action.act_window.domain" id="act_stock_plan_line_domain_surplus_stock">
+            <field name="name">Excess Stock</field>
+            <field name="sequence" eval="30"/>
+            <field name="domain" eval="[('destination', '=', None)]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_stock_plan_line"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_stock_plan_line_domain_all">
+            <field name="name">All</field>
+            <field name="sequence" eval="9999"/>
+            <field name="domain" eval="[]" pyson="1"/>
+            <field name="count" eval="False"/>
+            <field name="act_window" ref="act_stock_plan_line"/>
+        </record>
+
             <!-- Menu -->
         <menuitem id="menu_stock_plan_line" name="Stock Plan Line" parent="menu_stock_plan" sequence="1" icon="tryton-list" action="act_stock_plan_line" />
 

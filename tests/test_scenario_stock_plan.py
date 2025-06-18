@@ -16,7 +16,7 @@ class Test(unittest.TestCase):
         drop_db()
 
     def test(self):
-        config = activate_modules(['stock'])
+        _ = activate_modules(['stock'])
 
         ProductUom = Model.get('product.uom')
         ProductTemplate = Model.get('product.template')
@@ -25,7 +25,7 @@ class Test(unittest.TestCase):
         StockPlan = Model.get('stock.plan')
 
         # Global variables
-        today = datetime.now()
+        _ = datetime.now()
 
         # Create company
         create_company()
@@ -67,7 +67,7 @@ class Test(unittest.TestCase):
         supplier_location, = StockLocation.find([('code', '=', 'SUP')])
         storage_location, = StockLocation.find([('code', '=', 'STO')])
         customer_location, = StockLocation.find([('code', '=', 'CUS')])
-        warehouse_location, = StockLocation.find([('code', '=', 'WH')])
+        _, = StockLocation.find([('code', '=', 'WH')])
 
         # Create drafted stock moves to storage
         salt_move_draft = StockMove(
@@ -110,6 +110,8 @@ class Test(unittest.TestCase):
         eggs_move_customer.save()
 
         #
-        plan = StockPlan() # TODO:
+        plan = StockPlan()
         plan.click('recalculate')
         plan.reload()
+
+        # TODO:

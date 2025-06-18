@@ -25,7 +25,6 @@ class StockPlan(ModelSQL, ModelView):
         pool = Pool()
         Date = pool.get('ir.date')
         Product = pool.get('product.product')
-        StockLocation = pool.get('stock.location')
         StockMove = pool.get('stock.move')
         StockPlanLine = pool.get('stock.plan.line')
         Income = namedtuple('Income', ['move', 'quantity'])
@@ -53,52 +52,48 @@ class StockPlan(ModelSQL, ModelView):
 
             if from_warehouse == to_warehouse:
                 continue
+
             if from_warehouse and from_warehouse != to_warehouse:
-                outgoing[from_warehouse].append(move) # TODO:
+                outgoing[from_warehouse].append(move)
                 needed_products[from_warehouse.id].add(move.product.id)
 
             if to_warehouse and from_warehouse != to_warehouse:
                 key = (to_warehouse.id, move.product.id)
                 incoming[key].append(Income(move, move.quantity))
 
-        for warehouse_id, moves in outgoing.items():
+        for warehouse, moves in outgoing.items():
             with transaction.set_context(stock_date_end=Date.today()):
-                stocks = Product.products_by_location([warehouse_id], with_childs=True, grouping_filter=(list(needed_products[warehouse_id]), ))
-            warehouse = StockLocation(warehouse_id)
+                stocks = Product.products_by_location([warehouse.id], with_childs=True, grouping_filter=(list(needed_products[warehouse.id]), ))
+                # TODO: filter stocks quantity > 0
 
             for move in moves:
-                key = (warehouse_id, move.product.id)
-                stock_quantity = stocks.get(key, 0)
+                key = (warehouse.id, move.product.id)
                 move_quantity = move.quantity
 
-                if stock_quantity > 0: # TODO: key in stocks
-                    quantity = min(move_quantity, stock_quantity) # TODO: stocks[key]
+                if key in stocks:
+                    quantity = min(move_quantity, stocks[key])
+                    move_quantity -= quantity
+                    stocks[key] -= quantity
+                    if stocks[key] <= 0:
+                        stocks.pop(key)
 
                     lines.append(StockPlanLine(plan=plan, quantity=quantity, origin=warehouse, destination=move))
-                    move_quantity -= quantity
 
-                    if quantity == stocks[key]:
-                        stocks.pop(key)
-                    else:
-                        stocks[key] -= quantity
-
-                if move_quantity <= 0: # FIXME: ==
+                if (move_quantity - 0) == 0:
                     continue
 
                 while len(incoming[key]) > 0:
-                    if move_quantity <= 0: # FIXME: ==
+                    if (move_quantity - 0) == 0:
                         break
-
                     income = incoming[key][0]
 
                     quantity = min(move_quantity, income.quantity)
-
-                    lines.append(StockPlanLine(plan=plan, quantity=quantity, origin=income.move, destination=move))
                     move_quantity -= quantity
-
                     income.quantity -= quantity
                     if income.quantity <= 0:
                         incoming[key].remove(income)
+
+                    lines.append(StockPlanLine(plan=plan, quantity=quantity, origin=income.move, destination=move))
 
                 if move_quantity > 0:
                     lines.append(StockPlanLine(plan=plan, quantity=move_quantity, destination=move)) # TODO: Void line: Without origin
@@ -106,7 +101,7 @@ class StockPlan(ModelSQL, ModelView):
             lines.extend([
                 StockPlanLine(plan=plan, quantity=stock_quantity, origin=warehouse) # TODO: Void line: Without destination
                 for key, stock_quantity in stocks.items()
-                if key[0] == warehouse_id # TODO: can have 0 quantity
+                if key[0] == warehouse.id
             ])
 
         lines.extend([
@@ -131,13 +126,12 @@ class StockPlanLine(ModelSQL, ModelView):
     origin = fields.Reference('Origin Move', 'get_origin')
     plan = fields.Many2One('stock.plan', 'Stock Plan',
         required=True, ondelete='CASCADE')
-    product = fields.Function(
+    product = fields.Function( # TODO: This may not be a fields.Function, but a fields.Many2One
         fields.Many2One('product.product', 'Product'), 'get_product')
     quantity = fields.Integer('Quantity', required=True)
+#    uom = fields.Many2One('product.uom', 'Quantity UoM',
+#        help='The Unit of Measure for the quantities.', required=True)
     # TODO: UOM
-
-#    def get_rec_name(self, name): # FIXME:
-#        return f"{self.origin.rec_name} -> {self.destination.rec_name} ({self.product.rec_name})"
 
     @classmethod
     def get_origin(cls):
