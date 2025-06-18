@@ -64,7 +64,10 @@ class StockPlan(ModelSQL, ModelView):
         for warehouse, moves in outgoing.items():
             with transaction.set_context(stock_date_end=Date.today()):
                 stocks = Product.products_by_location([warehouse.id], with_childs=True, grouping_filter=(list(needed_products[warehouse.id]), ))
-                # TODO: filter stocks quantity > 0
+                stocks = {
+                    key:value
+                    for key, value in stocks.items() if value > 0
+                }
 
             for move in moves:
                 key = (warehouse.id, move.product.id)
@@ -106,7 +109,8 @@ class StockPlan(ModelSQL, ModelView):
 
         lines.extend([
             StockPlanLine(plan=plan, quantity=income.quantity, origin=income.move) # TODO: Void line: Without destination
-            for income in incoming.values()
+            for incomes in incoming.values()
+            for income in incomes
         ])
 
         StockPlanLine.save(lines)
@@ -131,17 +135,13 @@ class StockPlanLine(ModelSQL, ModelView):
     quantity = fields.Integer('Quantity', required=True)
 #    uom = fields.Many2One('product.uom', 'Quantity UoM',
 #        help='The Unit of Measure for the quantities.', required=True)
-    # TODO: UOM
 
     @classmethod
     def get_origin(cls):
         pool = Pool()
         Model = pool.get('ir.model')
         models = Model.search([ ('model', 'in', cls._get_origin()) ])
-        return [
-            (model.model, model.name)
-            for model in models
-        ]
+        return [('', '')] + [(model.model, model.name) for model in models]
 
     @classmethod
     def _get_origin(cls):
@@ -167,10 +167,3 @@ class StockPlanLine(ModelSQL, ModelView):
             return self.origin.product
         else:
             return None
-
-
-# class StockMove(metaclass=PoolMeta):
-#     __name__ = 'stock.move'
-
-#     def get_rec_name(self, name):
-#         return f"{self.from_location.rec_name} -> {self.to_location.rec_name} ({self.product.rec_name})"
