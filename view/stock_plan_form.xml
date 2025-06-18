@@ -1,0 +1,5 @@
+<form>
+    <field name="lines"/>
+    <newline/>
+    <button name="recalculate"/>
+</form>

@@ -1,0 +1,13 @@
+<form col="6">
+    <label name="product"/>
+    <field name="product"/>
+    <label name="quantity"/>
+    <field name="quantity"/>
+    <label name="difference"/>
+    <field name="difference"/>
+    <newline/>
+    <label name="origin"/>
+    <field name="origin"/>
+    <label name="destination"/>
+    <field name="destination"/>
+</form>

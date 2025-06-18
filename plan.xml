@@ -1,0 +1,94 @@
+<tryton>
+    <data>
+
+        <!-- stock.plan -->
+            <!-- Access -->
+        <record model="ir.model.access" id="access_stock_plan">
+            <field name="model">stock.plan</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_delete" eval="True"/>
+        </record>
+
+            <!-- Views -->
+        <record model="ir.ui.view" id="view_stock_plan_form">
+            <field name="model">stock.plan</field>
+            <field name="type">form</field>
+            <field name="name">stock_plan_form</field>
+        </record>
+        <record model="ir.ui.view" id="view_stock_plan_tree">
+            <field name="model">stock.plan</field>
+            <field name="type">tree</field>
+            <field name="name">stock_plan_tree</field>
+        </record>
+
+            <!-- Actions -->
+        <record model="ir.action.act_window" id="act_stock_plan">
+            <field name="name">Stock Plan</field>
+            <field name="res_model">stock.plan</field>
+        </record>
+        <record model="ir.action.act_window.view" id="act_stock_plan_form">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="view_stock_plan_form"/>
+            <field name="act_window" ref="act_stock_plan" />
+        </record>
+        <record model="ir.action.act_window.view" id="act_stock_plan_tree">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="view_stock_plan_tree"/>
+            <field name="act_window" ref="act_stock_plan" />
+        </record>
+
+            <!-- Buttons -->
+        <record model="ir.model.button" id="recalculate_button">
+            <field name="name">recalculate</field>
+            <field name="string">Recalculate</field>
+            <field name="model">stock.plan</field>
+        </record>
+
+            <!-- Menu -->
+        <menuitem id="menu_stock_plan" name="Stock Plan" parent="stock.menu_stock" sequence="30" icon="tryton-list" action="act_stock_plan" />
+
+        <!-- stock.plan.line -->
+            <!-- Access -->
+        <record model="ir.model.access" id="access_stock_plan_line">
+            <field name="model">stock.plan.line</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_delete" eval="True"/>
+        </record>
+
+            <!-- Views -->
+        <record model="ir.ui.view" id="view_stock_plan_line_form">
+            <field name="model">stock.plan.line</field>
+            <field name="type">form</field>
+            <field name="name">stock_plan_line_form</field>
+        </record>
+        <record model="ir.ui.view" id="view_stock_plan_line_tree">
+            <field name="model">stock.plan.line</field>
+            <field name="type">tree</field>
+            <field name="name">stock_plan_line_tree</field>
+        </record>
+
+            <!-- Actions -->
+        <record model="ir.action.act_window" id="act_stock_plan_line">
+            <field name="name">Stock Plan Line</field>
+            <field name="res_model">stock.plan.line</field>
+        </record>
+        <record model="ir.action.act_window.view" id="act_stock_plan_line_form">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="view_stock_plan_line_form"/>
+            <field name="act_window" ref="act_stock_plan_line" />
+        </record>
+        <record model="ir.action.act_window.view" id="act_stock_plan_line_tree">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="view_stock_plan_line_tree"/>
+            <field name="act_window" ref="act_stock_plan_line" />
+        </record>
+
+            <!-- Menu -->
+        <menuitem id="menu_stock_plan_line" name="Stock Plan Line" parent="menu_stock_plan" sequence="1" icon="tryton-list" action="act_stock_plan_line" />
+
+    </data>
+</tryton>

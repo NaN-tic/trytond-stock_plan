@@ -1,0 +1,7 @@
+<tree>
+    <field name="product" />
+    <field name="quantity" />
+    <field name="origin" />
+    <field name="destination" />
+    <field name="difference" />
+</tree>
