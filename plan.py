@@ -28,6 +28,11 @@ class StockPlan(ModelSQL, ModelView):
     @classmethod
     @ModelView.button
     def recalculate(cls, plans):
+        for plan in plans:
+            cls._recalculate(plan)
+
+    @classmethod
+    def _recalculate(cls, plan):
         pool = Pool()
         Date = pool.get('ir.date')
         Product = pool.get('product.product')
@@ -37,9 +42,6 @@ class StockPlan(ModelSQL, ModelView):
 
         transaction = Transaction()
 
-        plan = plans[0] # TODO: for plan in plans:
-        lines = []
-
         warehouses = StockLocation.search([('type', '=', 'warehouse')])
         moves = StockMove.search([
             ('state', 'not in', ('done', 'cancelled')),
@@ -48,6 +50,7 @@ class StockPlan(ModelSQL, ModelView):
             ('planned_date', 'ASC NULLS LAST'),
             ('id', 'ASC'),
         ])
+        lines = []
 
         outgoing = defaultdict(list)
         incoming = defaultdict(list)
@@ -125,7 +128,7 @@ class StockPlan(ModelSQL, ModelView):
         # EXCESS STOCK: Create for each existing incomes
         if plan.calculate_excess:
             lines.extend([
-                StockPlanLine(plan=plan, quantity=income['quantity'], origin=income['ref'], product=income['ref'].product) # TODO: Void line: Without destination
+                StockPlanLine(plan=plan, quantity=income['quantity'], origin=income['ref'], product=income['ref'].product)
                 for incomes in incoming.values()
                 for income in incomes
             ])
@@ -148,7 +151,7 @@ class StockPlanLine(ModelSQL, ModelView):
     plan = fields.Many2One('stock.plan', 'Stock Plan',
         required=True, ondelete='CASCADE')
     product = fields.Many2One('product.product', 'Product',
-        required=True, ondelete='SET NULL') # FIXME: ondelete='RESTRICT'?
+        required=True, ondelete='CASCADE')
     quantity = fields.Integer('Quantity', required=True)
 #    uom = fields.Many2One('product.uom', 'Quantity UoM',
 #        help='The Unit of Measure for the quantities.', required=True)
