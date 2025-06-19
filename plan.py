@@ -26,6 +26,7 @@ class StockPlan(ModelSQL, ModelView):
         Date = pool.get('ir.date')
         Product = pool.get('product.product')
         StockMove = pool.get('stock.move')
+        StockLocation = pool.get('stock.location')
         StockPlanLine = pool.get('stock.plan.line')
 
         transaction = Transaction()
@@ -33,6 +34,7 @@ class StockPlan(ModelSQL, ModelView):
         plan = plans[0] # TODO: for plan in plans:
         lines = []
 
+        warehouses = StockLocation.search([('type', '=', 'warehouse')])
         moves = StockMove.search([
             ('state', 'not in', ('done', 'cancelled')),
         ], order=[
@@ -60,14 +62,15 @@ class StockPlan(ModelSQL, ModelView):
                 key = (to_warehouse.id, move.product.id)
                 incoming[key].append({ 'ref': move, 'quantity': move.quantity })
 
-        for warehouse, moves in outgoing.items():
+        for warehouse in warehouses:
             with transaction.set_context(stock_date_end=Date.today()):
-                stocks = Product.products_by_location([warehouse.id], with_childs=True, grouping_filter=(list(needed_products[warehouse.id]), ))
+                stocks = Product.products_by_location([warehouse.id], with_childs=True) # , grouping_filter=(list(needed_products[warehouse.id]), )
                 stocks = {
                     key:value
                     for key, value in stocks.items() if value > 0
                 }
 
+            moves = outgoing[warehouse]
             for move in moves:
                 key = (warehouse.id, move.product.id)
                 move_quantity = move.quantity

@@ -573,18 +573,25 @@ class Test(unittest.TestCase):
 
         plan.click('recalculate')
         plan.reload()
-
         self.assertEqual(len(plan.lines), 2)
 
-        self.assertEqual(plan.lines[0].product, eggs)
-        self.assertEqual(plan.lines[0].quantity, 1)
-        self.assertEqual(plan.lines[0].origin, eggs_move_draft)
-        self.assertEqual(plan.lines[0].destination, eggs_warehouse_draft)
+        eggs_move_line = StockPlanLine.find([
+            ('origin', '=', eggs_move_draft),
+        ])
 
-        self.assertEqual(plan.lines[1].product, eggs)
-        self.assertEqual(plan.lines[1].quantity, 1)
-        self.assertEqual(plan.lines[1].origin, eggs_warehouse_draft)
-        self.assertEqual(plan.lines[1].destination, customer_move)
+        self.assertEqual(len(eggs_move_line), 1)
+        self.assertEqual(eggs_move_line[0].product, eggs)
+        self.assertEqual(eggs_move_line[0].quantity, 1)
+        self.assertEqual(eggs_move_line[0].destination, eggs_warehouse_draft)
+
+        customer_move_line = StockPlanLine.find([
+            ('destination', '=', customer_move),
+        ])
+
+        self.assertEqual(len(customer_move_line), 1)
+        self.assertEqual(customer_move_line[0].product, eggs)
+        self.assertEqual(customer_move_line[0].quantity, 1)
+        self.assertEqual(customer_move_line[0].origin, eggs_warehouse_draft)
 
         eggs_move_draft.click('do')
         eggs_warehouse_draft.click('do')
@@ -594,7 +601,6 @@ class Test(unittest.TestCase):
         # Incoming Moves: 1 egg
         # Storage: 100g salt
         # Customer: None
-        return
         eggs_move_draft = StockMove(
             product=eggs,
             quantity=1,
@@ -619,15 +625,23 @@ class Test(unittest.TestCase):
 
         self.assertEqual(len(plan.lines), 2) # FIXME: This will fail (1), because we only get the stock of that products that are present on the incoming moves (spoiler: salt is no present).
 
-        self.assertEqual(plan.lines[0].product, eggs)
-        self.assertEqual(plan.lines[0].quantity, 1)
-        self.assertEqual(plan.lines[0].origin, eggs_move_draft)
-        self.assertIsNone(plan.lines[0].destination)
+        eggs_move_line = StockPlanLine.find([
+            ('product', '=', eggs.id),
+        ])
 
-        self.assertEqual(plan.lines[1].product, salt)
-        self.assertEqual(plan.lines[1].quantity, 100)
-        self.assertEqual(plan.lines[1].origin, warehouse_location)
-        self.assertIsNone(plan.lines[1].destination)
+        self.assertEqual(len(eggs_move_line), 1)
+        self.assertEqual(eggs_move_line[0].quantity, 1)
+        self.assertEqual(eggs_move_line[0].origin, eggs_move_draft)
+        self.assertIsNone(eggs_move_line[0].destination)
+
+        salt_line = StockPlanLine.find([
+            ('product', '=', salt.id),
+        ])
+
+        self.assertEqual(len(salt_line), 1)
+        self.assertEqual(salt_line[0].quantity, 100)
+        self.assertEqual(salt_line[0].origin, warehouse_location)
+        self.assertIsNone(salt_line[0].destination)
 
         eggs_move_draft.click('do')
 
