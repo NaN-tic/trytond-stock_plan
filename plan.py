@@ -11,6 +11,8 @@ class StockPlan(ModelSQL, ModelView):
     __name__ = 'stock.plan'
 
     lines = fields.One2Many('stock.plan.line', 'plan', 'Lines')
+    calculate_excess = fields.Boolean('Calculate Excess',
+        help='If checked, the plan will include all stock from warehouses, even if they do not have destination.')
 
     @classmethod
     def __setup__(cls):
@@ -18,6 +20,10 @@ class StockPlan(ModelSQL, ModelView):
         cls._buttons.update({
             'recalculate': {}
         })
+
+    @staticmethod
+    def default_calculate_excess():
+        return True
 
     @classmethod
     @ModelView.button
@@ -56,7 +62,8 @@ class StockPlan(ModelSQL, ModelView):
 
             if from_warehouse and from_warehouse != to_warehouse:
                 outgoing[from_warehouse].append(move)
-                needed_products[from_warehouse.id].add(move.product.id)
+                if plan.calculate_excess:
+                    needed_products[from_warehouse.id].add(move.product.id)
 
             if to_warehouse and from_warehouse != to_warehouse:
                 key = (to_warehouse.id, move.product.id)
@@ -64,7 +71,10 @@ class StockPlan(ModelSQL, ModelView):
 
         for warehouse in warehouses:
             with transaction.set_context(stock_date_end=Date.today()):
-                stocks = Product.products_by_location([warehouse.id], with_childs=True) # , grouping_filter=(list(needed_products[warehouse.id]), )
+                if plan.calculate_excess:
+                    stocks = Product.products_by_location([warehouse.id], with_childs=True, grouping_filter=(list(needed_products[warehouse.id]), ))
+                else:
+                    stocks = Product.products_by_location([warehouse.id], with_childs=True)
                 stocks = {
                     key:value
                     for key, value in stocks.items() if value > 0
@@ -100,20 +110,25 @@ class StockPlan(ModelSQL, ModelView):
 
                     lines.append(StockPlanLine(plan=plan, quantity=quantity, origin=income['ref'], destination=move, product=move.product))
 
+                # WITHOUT STOCK: Move without destination
                 if move_quantity > 0:
-                    lines.append(StockPlanLine(plan=plan, quantity=move_quantity, destination=move, product=move.product)) # TODO: Void line: Without origin
+                    lines.append(StockPlanLine(plan=plan, quantity=move_quantity, destination=move, product=move.product))
 
+            # EXCESS STOCK: Create for each existing stock at warehouse
+            if plan.calculate_excess:
+                lines.extend([
+                    StockPlanLine(plan=plan, quantity=stock_quantity, origin=warehouse, product=Product(key[1]))
+                    for key, stock_quantity in stocks.items()
+                    if key[0] == warehouse.id
+                ])
+
+        # EXCESS STOCK: Create for each existing incomes
+        if plan.calculate_excess:
             lines.extend([
-                StockPlanLine(plan=plan, quantity=stock_quantity, origin=warehouse, product=Product(key[1])) # TODO: Void line: Without destination
-                for key, stock_quantity in stocks.items()
-                if key[0] == warehouse.id
+                StockPlanLine(plan=plan, quantity=income['quantity'], origin=income['ref'], product=income['ref'].product) # TODO: Void line: Without destination
+                for incomes in incoming.values()
+                for income in incomes
             ])
-
-        lines.extend([
-            StockPlanLine(plan=plan, quantity=income['quantity'], origin=income['ref'], product=income['ref'].product) # TODO: Void line: Without destination
-            for incomes in incoming.values()
-            for income in incomes
-        ])
 
         StockPlanLine.save(lines)
         plan.lines = lines

@@ -1,5 +1,8 @@
 <form>
-    <field name="lines"/>
+    <label name="calculate_excess"/>
+    <field name="calculate_excess"/>
     <newline/>
-    <button name="recalculate"/>
+    <field name="lines" colspan="6"/>
+    <newline/>
+    <button name="recalculate" colspan="6"/>
 </form>
