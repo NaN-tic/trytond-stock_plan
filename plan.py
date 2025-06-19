@@ -2,7 +2,7 @@ from datetime import timedelta
 from trytond.transaction import Transaction
 from trytond.model import ModelSQL, ModelView, fields
 from trytond.pool import Pool
-from collections import defaultdict, namedtuple
+from collections import defaultdict
 
 
 # TODO: Dos camps, no fields.Reference -> Seguro¿ Quiero decir, al fin y al cabo se seguirá haciendo un 'if' como: if line.origin elif line.origin_location
@@ -27,7 +27,6 @@ class StockPlan(ModelSQL, ModelView):
         Product = pool.get('product.product')
         StockMove = pool.get('stock.move')
         StockPlanLine = pool.get('stock.plan.line')
-        Income = namedtuple('Income', ['move', 'quantity'])
 
         transaction = Transaction()
 
@@ -59,7 +58,7 @@ class StockPlan(ModelSQL, ModelView):
 
             if to_warehouse and from_warehouse != to_warehouse:
                 key = (to_warehouse.id, move.product.id)
-                incoming[key].append(Income(move, move.quantity))
+                incoming[key].append({ 'ref': move, 'quantity': move.quantity })
 
         for warehouse, moves in outgoing.items():
             with transaction.set_context(stock_date_end=Date.today()):
@@ -90,13 +89,13 @@ class StockPlan(ModelSQL, ModelView):
                         break
                     income = incoming[key][0]
 
-                    quantity = min(move_quantity, income.quantity)
+                    quantity = min(move_quantity, income['quantity'])
                     move_quantity -= quantity
-                    income.quantity -= quantity
-                    if income.quantity <= 0:
+                    income['quantity'] -= quantity
+                    if income['quantity'] <= 0:
                         incoming[key].remove(income)
 
-                    lines.append(StockPlanLine(plan=plan, quantity=quantity, origin=income.move, destination=move, product=move.product))
+                    lines.append(StockPlanLine(plan=plan, quantity=quantity, origin=income['ref'], destination=move, product=move.product))
 
                 if move_quantity > 0:
                     lines.append(StockPlanLine(plan=plan, quantity=move_quantity, destination=move, product=move.product)) # TODO: Void line: Without origin
@@ -108,7 +107,7 @@ class StockPlan(ModelSQL, ModelView):
             ])
 
         lines.extend([
-            StockPlanLine(plan=plan, quantity=income.quantity, origin=income.move, product=income.move.product) # TODO: Void line: Without destination
+            StockPlanLine(plan=plan, quantity=income['quantity'], origin=income['ref'], product=income['ref'].product) # TODO: Void line: Without destination
             for incomes in incoming.values()
             for income in incomes
         ])
