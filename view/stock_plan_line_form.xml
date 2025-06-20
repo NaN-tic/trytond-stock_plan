@@ -11,8 +11,8 @@
         <field name="origin_date" xexpand="0"/>
         <label name="destination_date"/>
         <field name="destination_date" xexpand="0"/>
-        <label name="difference"/>
-        <field name="difference"/>
+        <label name="day_difference"/>
+        <field name="day_difference"/>
     </group>
     <newline/>
     <group id="moves_info" col="-1">

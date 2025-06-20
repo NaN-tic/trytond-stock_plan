@@ -5,5 +5,5 @@
     <field name="destination" />
     <field name="origin_date" />
     <field name="destination_date" />
-    <field name="difference" />
+    <field name="day_difference" />
 </tree>

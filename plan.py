@@ -1,4 +1,3 @@
-from datetime import timedelta
 from trytond.transaction import Transaction
 from trytond.model import ModelSQL, ModelView, fields
 from trytond.pool import Pool
@@ -97,7 +96,7 @@ class StockPlan(ModelSQL, ModelView):
                     if stocks[key] <= 0:
                         stocks.pop(key)
 
-                    lines.append(StockPlanLine(plan=plan, quantity=quantity, origin=warehouse, destination=move, product=move.product))
+                    lines.append(StockPlanLine(plan=plan, quantity=quantity, origin=warehouse, destination=move, product=move.product, origin_date=StockPlanLine._default_date(), destination_date=move.effective_date or move.planned_date))
 
                 if (move_quantity - 0) == 0:
                     continue
@@ -113,16 +112,16 @@ class StockPlan(ModelSQL, ModelView):
                     if income['quantity'] <= 0:
                         incoming[key].remove(income)
 
-                    lines.append(StockPlanLine(plan=plan, quantity=quantity, origin=income['ref'], destination=move, product=move.product))
+                    lines.append(StockPlanLine(plan=plan, quantity=quantity, origin=income['ref'], destination=move, product=move.product, origin_date=income['ref'].effective_date or income['ref'].planned_date, destination_date=move.effective_date or move.planned_date))
 
                 # WITHOUT STOCK: Move without destination
                 if move_quantity > 0:
-                    lines.append(StockPlanLine(plan=plan, quantity=move_quantity, destination=move, product=move.product))
+                    lines.append(StockPlanLine(plan=plan, quantity=move_quantity, destination=move, product=move.product, destination_date=move.effective_date or move.planned_date))
 
             # EXCESS STOCK: Create for each existing stock at warehouse
             if plan.calculate_excess:
                 lines.extend([
-                    StockPlanLine(plan=plan, quantity=stock_quantity, origin=warehouse, product=Product(key[1]))
+                    StockPlanLine(plan=plan, quantity=stock_quantity, origin=warehouse, product=Product(key[1]), origin_date=StockPlanLine._default_date(),)
                     for key, stock_quantity in stocks.items()
                     if key[0] == warehouse.id
                 ])
@@ -130,7 +129,7 @@ class StockPlan(ModelSQL, ModelView):
         # EXCESS STOCK: Create for each existing incomes
         if plan.calculate_excess:
             lines.extend([
-                StockPlanLine(plan=plan, quantity=income['quantity'], origin=income['ref'], product=income['ref'].product)
+                StockPlanLine(plan=plan, quantity=income['quantity'], origin=income['ref'], product=income['ref'].product, origin_date=income['ref'].effective_date or income['ref'].planned_date)
                 for incomes in incoming.values()
                 for income in incomes
             ])
@@ -148,8 +147,8 @@ class StockPlanLine(ModelSQL, ModelView):
 
     destination = fields.Many2One('stock.move', 'Destination Move')
     destination_date = fields.Date('Destination Date', readonly=True) # TODO: Domains
-    difference = fields.Function(fields.TimeDelta('Difference'),
-        'get_difference', searcher='search_difference')
+    day_difference = fields.Function(fields.Integer('Day Difference'),
+        'get_day_difference', searcher='search_day_difference')
     origin = fields.Reference('Origin Move', 'get_origin')
     origin_date = fields.Date('Origin Date', readonly=True) # TODO: Domains
     plan = fields.Many2One('stock.plan', 'Stock Plan',
@@ -159,14 +158,6 @@ class StockPlanLine(ModelSQL, ModelView):
     quantity = fields.Integer('Quantity', required=True)
 #    uom = fields.Many2One('product.uom', 'Quantity UoM',
 #        help='The Unit of Measure for the quantities.', required=True)
-
-    @classmethod
-    def default_origin_date(cls):
-        return cls._default_date()
-
-    @classmethod
-    def default_destination_date(cls):
-        return cls._default_date()
 
     @staticmethod
     def _default_date():
@@ -185,38 +176,15 @@ class StockPlanLine(ModelSQL, ModelView):
     def _get_origin(cls):
         return ['stock.move', 'stock.location']
 
-    def get_difference(self, name):
-        difference = self.destination_date - self.origin_date
-        return timedelta(seconds=difference.total_seconds())
+    def get_day_difference(self, name):
+        destination_date = self.destination_date or self._default_date()
+        origin_date = self.origin_date or self._default_date()
 
-    @fields.depends('destination')
-    def on_change_with_destination_date(self):
-        move = self.destination
-
-        if not move:
-            return self.default_destination_date()
-        elif move.effective_date:
-            return move.effective_date
-        elif move.planned_date:
-            return move.planned_date
-        else:
-            return self.default_destination_date()
-
-    @fields.depends('origin')
-    def on_change_with_origin_date(self):
-        move = self.origin
-
-        if not (move and move.__name__ == 'stock.move'):
-            return self.default_origin_date()
-        if move.effective_date:
-            return move.effective_date
-        elif move.planned_date:
-            return move.planned_date
-        else:
-            return self.default_origin_date()
+        day_difference = destination_date - origin_date
+        return day_difference.total_seconds() // (24 * 3600)
 
     @classmethod
-    def search_difference(cls, name, clause):
+    def search_day_difference(cls, name, clause):
         pass
 
     # TODO: search_difference
