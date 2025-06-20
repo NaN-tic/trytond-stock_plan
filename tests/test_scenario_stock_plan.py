@@ -601,7 +601,7 @@ class Test(unittest.TestCase):
         eggs_warehouse_draft.click('do')
         customer_move.click('do')
 
-        # CASE 8: Testing excess stock.
+        # CASE 8: Testing excess stock (with calculate_excess enabled)
         # Incoming Moves: 1 egg
         # Storage: 100g salt
         # Customer: None
@@ -627,7 +627,7 @@ class Test(unittest.TestCase):
         plan.click('recalculate')
         plan.reload()
 
-        self.assertEqual(len(plan.lines), 2) # FIXME: This will fail (1), because we only get the stock of that products that are present on the incoming moves (spoiler: salt is no present).
+        self.assertEqual(len(plan.lines), 2)
 
         eggs_move_line = StockPlanLine.find([
             ('product', '=', eggs.id),
@@ -646,6 +646,18 @@ class Test(unittest.TestCase):
         self.assertEqual(salt_line[0].quantity, 100)
         self.assertEqual(salt_line[0].origin, warehouse_location)
         self.assertIsNone(salt_line[0].destination)
+
+        # CASE 9: Testing excess stock (with calculate_excess disabled)
+        # Incoming Moves: 1 egg
+        # Storage: 100g salt
+        # Customer: None
+
+        plan.calculate_excess = False
+        plan.save()
+        plan.click('recalculate')
+        plan.reload()
+
+        self.assertEqual(len(plan.lines), 0)
 
         eggs_move_draft.click('do')
 
