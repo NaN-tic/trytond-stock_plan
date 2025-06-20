@@ -3,7 +3,9 @@
         <label name="product"/>
         <field name="product"/>
         <label name="quantity"/>
-        <field name="quantity"/>
+        <field name="quantity" xexpand="0"/>
+        <label name="uom"/>
+        <field name="uom" xexpand="0"/>
     </group>
     <newline/>
     <group id="dates" col="-1">

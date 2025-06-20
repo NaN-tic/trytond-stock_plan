@@ -4,7 +4,7 @@ from trytond.pool import Pool
 from collections import defaultdict
 from trytond.pyson import Eval
 
-
+# TODO: Add helps
 class StockPlan(ModelSQL, ModelView):
     'Stock Plan'
     __name__ = 'stock.plan'
@@ -184,8 +184,8 @@ class StockPlanLine(ModelSQL, ModelView):
     product = fields.Many2One('product.product', 'Product',
         required=True, ondelete='CASCADE')
     quantity = fields.Integer('Quantity', required=True)
-#    uom = fields.Many2One('product.uom', 'Quantity UoM',
-#        help='The Unit of Measure for the quantities.', required=True)
+    uom = fields.Function(fields.Many2One('product.uom', 'Quantity UoM',
+        help='The Unit of Measure for the quantities.'), 'get_uom')
 
     @staticmethod
     def _default_date():
@@ -215,6 +215,11 @@ class StockPlanLine(ModelSQL, ModelView):
 
         day_difference = destination_date - origin_date
         return day_difference.total_seconds() // (24 * 3600)
+
+    def get_uom(self, name):
+        if not self.product:
+            return None
+        return self.product.default_uom
 
     @classmethod
     def search_day_difference(cls, name, clause):
