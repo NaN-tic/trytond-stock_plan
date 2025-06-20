@@ -2,6 +2,7 @@ from trytond.transaction import Transaction
 from trytond.model import ModelSQL, ModelView, fields
 from trytond.pool import Pool
 from collections import defaultdict
+from trytond.pyson import Eval
 
 
 class StockPlan(ModelSQL, ModelView):
@@ -9,12 +10,20 @@ class StockPlan(ModelSQL, ModelView):
     __name__ = 'stock.plan'
 
     lines = fields.One2Many('stock.plan.line', 'plan', 'Lines')
+    # If you show 'lines' in the view, you will also load the lines, not only the count.
     total_lines = fields.Function(
         fields.Integer('Total Lines'), 'get_total_lines')
+    without_stock = fields.Function(
+        fields.Integer('Without Stock'), 'get_without_stock')
+    late_stock = fields.Function(
+        fields.Integer('Late Stock'), 'get_late_stock')
+    excess_stock = fields.Function(
+        fields.Integer('Excess Stock',
+            states={ 'invisible': ~Eval('calculate_excess', True) }),
+            'get_excess_stock')
     calculate_excess = fields.Boolean('Calculate Excess', help=(
-        'If checked, the plan will include all stock from warehouses, even if they do not have destination.'
-    ))
-    # TODO: calculate_excess = Configuration, not field.
+        'If checked, the plan will include all stock from warehouses, '
+        'even if they do not have destination.')) # TODO: Subject to change: may be a configuration.
 
     @classmethod
     def __setup__(cls):
@@ -29,6 +38,17 @@ class StockPlan(ModelSQL, ModelView):
 
     def get_total_lines(self, name):
         return len(self.lines)
+
+    def get_without_stock(self, name):
+        return len([line for line in self.lines if not line.origin])
+
+    def get_late_stock(self, name):
+        return len([line for line in self.lines if line.day_difference < 0])
+
+    def get_excess_stock(self, name):
+        # if not self.calculate_excess: TODO:
+        #     return 0
+        return len([line for line in self.lines if not line.destination])
 
     @classmethod
     @ModelView.button

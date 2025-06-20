@@ -1,7 +1,6 @@
 <form>
-    <button name="recalculate" colspan="6"/>
     <label name="calculate_excess"/>
     <field name="calculate_excess"/>
-    <newline/>
+    <button name="recalculate" colspan="6"/>
     <field name="lines" colspan="6" height="500"/>
 </form>
