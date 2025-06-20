@@ -458,7 +458,6 @@ class Test(unittest.TestCase):
             self.assertEqual(lines[0].quantity, 1)
             self.assertEqual(lines[0].origin, eggs_move_draft)
             self.assertEqual(lines[0].destination, customer_move)
-            self.assertLess(plan.lines[0].day_difference, 0)
 
         late_date = datetime(year=2034, month=10, day=19).date()
         today = datetime.now().date()
@@ -476,6 +475,7 @@ class Test(unittest.TestCase):
         plan.reload()
 
         late_date_check(plan.lines)
+        self.assertLess(plan.lines[0].day_difference, 0)
 
             # The same, but with planned_date.
         eggs_move_draft.effective_date = None
@@ -490,6 +490,7 @@ class Test(unittest.TestCase):
         plan.reload()
 
         late_date_check(plan.lines)
+        self.assertLess(plan.lines[0].day_difference, 0)
 
             # The same, but with effective_date and planned_date.
         eggs_move_draft.effective_date = late_date
@@ -504,6 +505,7 @@ class Test(unittest.TestCase):
         plan.reload()
 
         late_date_check(plan.lines)
+        self.assertLess(plan.lines[0].day_difference, 0)
 
             # The same, but with effective_date and None.
         eggs_move_draft.effective_date = late_date
@@ -518,6 +520,7 @@ class Test(unittest.TestCase):
         plan.reload()
 
         late_date_check(plan.lines)
+        self.assertEqual(plan.lines[0].day_difference, 0)
 
             # The same, but with planned_date and None.
         eggs_move_draft.effective_date = None
@@ -532,6 +535,7 @@ class Test(unittest.TestCase):
         plan.reload()
 
         late_date_check(plan.lines)
+        self.assertEqual(plan.lines[0].day_difference, 0)
 
         eggs_move_draft.click('do')
         customer_move.click('do')
