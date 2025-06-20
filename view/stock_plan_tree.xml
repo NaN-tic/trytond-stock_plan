@@ -1,5 +1,5 @@
 <tree>
     <button name="recalculate"/>
-    <field name="calculate_excess"/>
-    <field name="lines" expand="5"/>
+    <field name="calculate_excess" expand="1"/>
+    <field name="total_lines" expand="4"/>
 </tree>

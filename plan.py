@@ -4,16 +4,17 @@ from trytond.pool import Pool
 from collections import defaultdict
 
 
-# TODO: Dos camps, no fields.Reference -> Seguro¿ Quiero decir, al fin y al cabo se seguirá haciendo un 'if' como: if line.origin elif line.origin_location
 class StockPlan(ModelSQL, ModelView):
     'Stock Plan'
     __name__ = 'stock.plan'
 
     lines = fields.One2Many('stock.plan.line', 'plan', 'Lines')
-    calculate_excess = fields.Boolean('Calculate Excess',
-        help='If checked, the plan will include all stock from warehouses, even if they do not have destination.') # TODO: Configuration, not field.
-    # calculate_global (significa que dan igual los warehouses)
-    # lines_errors = fields.Function(fields.Integer())
+    total_lines = fields.Function(
+        fields.Integer('Total Lines'), 'get_total_lines')
+    calculate_excess = fields.Boolean('Calculate Excess', help=(
+        'If checked, the plan will include all stock from warehouses, even if they do not have destination.'
+    ))
+    # TODO: calculate_excess = Configuration, not field.
 
     @classmethod
     def __setup__(cls):
@@ -25,6 +26,9 @@ class StockPlan(ModelSQL, ModelView):
     @staticmethod
     def default_calculate_excess():
         return True
+
+    def get_total_lines(self, name):
+        return len(self.lines)
 
     @classmethod
     @ModelView.button
