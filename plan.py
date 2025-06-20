@@ -32,6 +32,10 @@ class StockPlan(ModelSQL, ModelView):
             'recalculate': {}
         })
 
+    # TODO: Review with Albert
+    def get_rec_name(self, name):
+        return 'Stock Plan %s' % self.id
+
     @staticmethod
     def default_calculate_excess():
         return True
