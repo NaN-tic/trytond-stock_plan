@@ -177,6 +177,11 @@ class StockPlanLine(ModelSQL, ModelView):
         return ['stock.move', 'stock.location']
 
     def get_day_difference(self, name):
+        if not (self.origin_date and self.destination_date):
+            return 0
+        elif self.origin_date and not self.destination_date:
+            return 0
+
         destination_date = self.destination_date or self._default_date()
         origin_date = self.origin_date or self._default_date()
 
@@ -185,9 +190,35 @@ class StockPlanLine(ModelSQL, ModelView):
 
     @classmethod
     def search_day_difference(cls, name, clause):
-        pass
 
-    # TODO: search_difference
-    # TODO: domain en plan.xml
+        from sql.conditionals import Coalesce
+        from sql.operators import And, NotEqual, Null
+
+        pool = Pool()
+        Date = pool.get('ir.date')
+
+        table = cls.__table__()
+        today = Date.today()
+
+        _field, operator, value = clause
+
+        Operator = fields.SQL_OPERATORS[operator]
+        query = (
+            table
+                .select(table.id,
+                    where=(And([
+                        Operator(
+                            Coalesce(table.destination_date, today) - Coalesce(table.origin_date, today),
+                            value
+                        ),
+                        NotEqual(table.destination_date, Null)
+                        ])
+                    )
+                )
+        )
+
+        return [('id', 'in', query)]
+
+
     # TODO: Probar test
     # TODO: Probar módulo con otras bases de datos
