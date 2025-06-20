@@ -95,14 +95,14 @@
             <field name="count" eval="True"/>
             <field name="act_window" ref="act_stock_plan_line"/>
         </record>
-<!--        <record model="ir.action.act_window.domain" id="act_stock_plan_line_domain_late_stock">
+        <record model="ir.action.act_window.domain" id="act_stock_plan_line_domain_late_stock">
             <field name="name">Late Stock</field>
             <field name="sequence" eval="20"/>
-            <field name="domain" eval="[('TODO:', '=', None)]" pyson="1"/>
+            <field name="domain" eval="[('difference', '&lt;', 0)]" pyson="1"/>
             <field name="count" eval="True"/>
             <field name="act_window" ref="act_stock_plan_line"/>
         </record>
--->        <record model="ir.action.act_window.domain" id="act_stock_plan_line_domain_surplus_stock">
+        <record model="ir.action.act_window.domain" id="act_stock_plan_line_domain_surplus_stock">
             <field name="name">Excess Stock</field>
             <field name="sequence" eval="30"/>
             <field name="domain" eval="[('destination', '=', None)]" pyson="1"/>

@@ -1,13 +1,24 @@
 <form col="6">
-    <label name="product"/>
-    <field name="product"/>
-    <label name="quantity"/>
-    <field name="quantity"/>
-    <label name="difference"/>
-    <field name="difference"/>
+    <group id="product_info" col="-1">
+        <label name="product"/>
+        <field name="product"/>
+        <label name="quantity"/>
+        <field name="quantity"/>
+    </group>
     <newline/>
-    <label name="origin"/>
-    <field name="origin"/>
-    <label name="destination"/>
-    <field name="destination"/>
+    <group id="dates" col="-1">
+        <label name="origin_date"/>
+        <field name="origin_date" xexpand="0"/>
+        <label name="destination_date"/>
+        <field name="destination_date" xexpand="0"/>
+        <label name="difference"/>
+        <field name="difference"/>
+    </group>
+    <newline/>
+    <group id="moves_info" col="-1">
+        <label name="origin"/>
+        <field name="origin"/>
+        <label name="destination"/>
+        <field name="destination"/>
+    </group>
 </form>

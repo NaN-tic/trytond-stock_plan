@@ -458,7 +458,7 @@ class Test(unittest.TestCase):
             self.assertEqual(lines[0].quantity, 1)
             self.assertEqual(lines[0].origin, eggs_move_draft)
             self.assertEqual(lines[0].destination, customer_move)
-            # TODO: difference.
+            self.assertLess(plan.lines[0].difference, 0)
 
         late_date = datetime(year=2034, month=10, day=19).date()
         today = datetime.now().date()

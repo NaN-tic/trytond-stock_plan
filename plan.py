@@ -12,7 +12,9 @@ class StockPlan(ModelSQL, ModelView):
 
     lines = fields.One2Many('stock.plan.line', 'plan', 'Lines')
     calculate_excess = fields.Boolean('Calculate Excess',
-        help='If checked, the plan will include all stock from warehouses, even if they do not have destination.')
+        help='If checked, the plan will include all stock from warehouses, even if they do not have destination.') # TODO: Configuration, not field.
+    # calculate_global (significa que dan igual los warehouses)
+    # lines_errors = fields.Function(fields.Integer())
 
     @classmethod
     def __setup__(cls):
@@ -145,9 +147,11 @@ class StockPlanLine(ModelSQL, ModelView):
     __name__ = 'stock.plan.line'
 
     destination = fields.Many2One('stock.move', 'Destination Move')
-    difference = fields.Function(
-        fields.TimeDelta('Difference'), 'get_difference')
+    destination_date = fields.Date('Destination Date', readonly=True) # TODO: Domains
+    difference = fields.Function(fields.TimeDelta('Difference'),
+        'get_difference', searcher='search_difference')
     origin = fields.Reference('Origin Move', 'get_origin')
+    origin_date = fields.Date('Origin Date', readonly=True) # TODO: Domains
     plan = fields.Many2One('stock.plan', 'Stock Plan',
         required=True, ondelete='CASCADE')
     product = fields.Many2One('product.product', 'Product',
@@ -155,6 +159,20 @@ class StockPlanLine(ModelSQL, ModelView):
     quantity = fields.Integer('Quantity', required=True)
 #    uom = fields.Many2One('product.uom', 'Quantity UoM',
 #        help='The Unit of Measure for the quantities.', required=True)
+
+    @classmethod
+    def default_origin_date(cls):
+        return cls._default_date()
+
+    @classmethod
+    def default_destination_date(cls):
+        return cls._default_date()
+
+    @staticmethod
+    def _default_date():
+        pool = Pool()
+        Date = pool.get('ir.date')
+        return Date.today()
 
     @classmethod
     def get_origin(cls):
@@ -168,14 +186,40 @@ class StockPlanLine(ModelSQL, ModelView):
         return ['stock.move', 'stock.location']
 
     def get_difference(self, name):
-        return timedelta(0)
-        destination = timedelta(0)
-        origin = timedelta(0)
+        difference = self.destination_date - self.origin_date
+        return timedelta(seconds=difference.total_seconds())
 
-        if self.destination:
-            destination = self.destination.effective_date or self.destination.planned_date or timedelta(0)
+    @fields.depends('destination')
+    def on_change_with_destination_date(self):
+        move = self.destination
 
-        if self.origin and self.origin.__name__ == 'stock.move':
-            origin = self.origin.effective_date or self.origin.planned_date or timedelta(0)
+        if not move:
+            return self.default_destination_date()
+        elif move.effective_date:
+            return move.effective_date
+        elif move.planned_date:
+            return move.planned_date
+        else:
+            return self.default_destination_date()
 
-        return destination - origin
+    @fields.depends('origin')
+    def on_change_with_origin_date(self):
+        move = self.origin
+
+        if not (move and move.__name__ == 'stock.move'):
+            return self.default_origin_date()
+        if move.effective_date:
+            return move.effective_date
+        elif move.planned_date:
+            return move.planned_date
+        else:
+            return self.default_origin_date()
+
+    @classmethod
+    def search_difference(cls, name, clause):
+        pass
+
+    # TODO: search_difference
+    # TODO: domain en plan.xml
+    # TODO: Probar test
+    # TODO: Probar módulo con otras bases de datos

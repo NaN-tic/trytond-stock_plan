@@ -3,5 +3,7 @@
     <field name="quantity" />
     <field name="origin" />
     <field name="destination" />
+    <field name="origin_date" />
+    <field name="destination_date" />
     <field name="difference" />
 </tree>
