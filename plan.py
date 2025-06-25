@@ -240,15 +240,9 @@ class StockPlanLine(ModelSQL, ModelView):
         return ['stock.move', 'stock.location']
 
     def get_day_difference(self, name):
-        if not (self.origin_date and self.destination_date):
+        if not self.origin_date or not self.destination_date:
             return
-        elif self.origin_date and not self.destination_date:
-            return
-
-        destination_date = self.destination_date or self._default_date()
-        origin_date = self.origin_date or self._default_date()
-
-        day_difference = destination_date - origin_date
+        day_difference = self.destination_date - self.origin_date
         return day_difference.total_seconds() // (24 * 3600)
 
     def get_uom(self, name):
