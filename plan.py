@@ -45,8 +45,8 @@ class StockPlan(ModelSQL, ModelView):
         return 'Stock Plan %s' % self.id
 
     def get_excess_stock(self, name):
-        # if not self.calculate_excess: TODO:
-        #     return 0
+        if not self.calculate_excess:
+            return
         return len([line for line in self.lines if not line.destination])
 
     def get_late_stock(self, name):
