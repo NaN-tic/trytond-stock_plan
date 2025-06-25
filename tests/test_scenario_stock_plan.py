@@ -4,6 +4,7 @@ from proteus import Model
 from trytond.tests.test_tryton import drop_db
 from trytond.tests.tools import activate_modules
 from trytond.modules.company.tests.tools import create_company, get_company
+from trytond.modules.stock.exceptions import MoveOriginWarning
 from decimal import Decimal
 
 
@@ -16,7 +17,7 @@ class Test(unittest.TestCase):
         drop_db()
 
     def test(self):
-        _ = activate_modules(['stock', 'stock_plan'])
+        config = activate_modules(['stock', 'stock_plan'])
 
         ProductUom = Model.get('product.uom')
         ProductTemplate = Model.get('product.template')
@@ -24,6 +25,7 @@ class Test(unittest.TestCase):
         StockMove = Model.get('stock.move')
         StockPlan = Model.get('stock.plan')
         StockPlanLine = Model.get('stock.plan.line')
+        Warning = Model.get('res.user.warning')
 
         # Create company
         create_company()
@@ -70,6 +72,14 @@ class Test(unittest.TestCase):
         # Create stock plan
         plan = StockPlan()
 
+        def click_do(move):
+            try:
+                move.click('do')
+            except MoveOriginWarning as warning:
+                _, (key, *_) = warning.args
+                Warning(user=config.user, name=key).save()
+                move.click('do')
+
         # CASE 1: Testing source as stock moves.
         # Incoming Moves (x1): 1 egg
         # Storage: None
@@ -101,8 +111,8 @@ class Test(unittest.TestCase):
         self.assertEqual(plan.lines[0].source, eggs_move_draft)
         self.assertEqual(plan.lines[0].destination, customer_move)
 
-        eggs_move_draft.click('do')
-        customer_move.click('do')
+        eggs_move_draft.click('cancel')
+        customer_move.click('cancel')
 
         # CASE 2: Testing source as storage.
         # Incoming Moves: None
@@ -114,9 +124,9 @@ class Test(unittest.TestCase):
             from_location=supplier_location,
             to_location=storage_location,
             currency=company.currency,
-            unit_price=eggs.cost_price,)
+            unit_price=eggs.cost_price)
         eggs_storage.save()
-        eggs_storage.click('do')
+        click_do(eggs_storage)
 
         customer_move = StockMove(
             product=eggs,
@@ -136,7 +146,7 @@ class Test(unittest.TestCase):
         self.assertEqual(plan.lines[0].source, warehouse_location)
         self.assertEqual(plan.lines[0].destination, customer_move)
 
-        customer_move.click('do')
+        click_do(customer_move)
 
         # CASE 3: Testing mixed source.
         # Incoming Moves (x1): 1 egg, 100g salt
@@ -170,7 +180,7 @@ class Test(unittest.TestCase):
             currency=company.currency,
             unit_price=eggs.cost_price,)
         eggs_storage.save()
-        eggs_storage.click('do')
+        click_do(eggs_storage)
 
         salt_storage = StockMove(
             product=salt,
@@ -180,7 +190,7 @@ class Test(unittest.TestCase):
             currency=company.currency,
             unit_price=salt.cost_price,)
         salt_storage.save()
-        salt_storage.click('do')
+        click_do(salt_storage)
 
             # Create customer moves
         customer_move_eggs = StockMove(
@@ -242,10 +252,10 @@ class Test(unittest.TestCase):
         self.assertEqual(len(salt_storage_line), 1)
         self.assertEqual(salt_storage_line[0].quantity, 100)
 
-        eggs_move_draft.click('do')
-        salt_move_draft.click('do')
-        customer_move_eggs.click('do')
-        customer_move_salt.click('do')
+        click_do(eggs_move_draft)
+        click_do(salt_move_draft)
+        click_do(customer_move_eggs)
+        click_do(customer_move_salt)
 
         # CASE 4: Testing mixed source with excess stock.
         # Incoming Moves (x2): 4 eggs, 400g salt
@@ -282,7 +292,7 @@ class Test(unittest.TestCase):
             currency=company.currency,
             unit_price=eggs.cost_price,)
         eggs_storage.save()
-        eggs_storage.click('do')
+        click_do(eggs_storage)
 
         salt_storage = StockMove(
             product=salt,
@@ -292,7 +302,7 @@ class Test(unittest.TestCase):
             currency=company.currency,
             unit_price=salt.cost_price,)
         salt_storage.save()
-        salt_storage.click('do')
+        click_do(salt_storage)
 
             # Create customer moves
         customer_move_eggs = StockMove(
@@ -378,12 +388,12 @@ class Test(unittest.TestCase):
         self.assertEqual(len(excess_salt), 1)
         self.assertEqual(excess_salt[0].quantity, 50)
 
-        eggs_move_draft.click('do')
-        eggs_move_draft_copy.click('do')
-        salt_move_draft.click('do')
-        salt_move_draft_copy.click('do')
-        customer_move_eggs.click('do')
-        customer_move_salt.click('do')
+        click_do(eggs_move_draft)
+        click_do(eggs_move_draft_copy)
+        click_do(salt_move_draft)
+        click_do(salt_move_draft_copy)
+        click_do(customer_move_eggs)
+        click_do(customer_move_salt)
 
             # Remove excess stock
         excess_eggs_customer = StockMove(
@@ -394,7 +404,7 @@ class Test(unittest.TestCase):
             currency=company.currency,
             unit_price=eggs.cost_price,)
         excess_eggs_customer.save()
-        excess_eggs_customer.click('do')
+        click_do(excess_eggs_customer)
 
         excess_salt_customer = StockMove(
             product=salt,
@@ -404,7 +414,7 @@ class Test(unittest.TestCase):
             currency=company.currency,
             unit_price=salt.cost_price,)
         excess_salt_customer.save()
-        excess_salt_customer.click('do')
+        click_do(excess_salt_customer)
 
         # CASE 5: Testing no stock.
         # Incoming Moves: None
@@ -520,7 +530,7 @@ class Test(unittest.TestCase):
         plan.reload()
 
         late_date_check(plan.lines)
-        self.assertEqual(plan.lines[0].day_difference, 0)
+        self.assertEqual(plan.lines[0].day_difference, None)
 
             # The same, but with planned_date and None.
         eggs_move_draft.effective_date = None
@@ -535,10 +545,10 @@ class Test(unittest.TestCase):
         plan.reload()
 
         late_date_check(plan.lines)
-        self.assertEqual(plan.lines[0].day_difference, 0)
+        self.assertEqual(plan.lines[0].day_difference, None)
 
-        eggs_move_draft.click('do')
-        customer_move.click('do')
+        click_do(eggs_move_draft)
+        click_do(customer_move)
 
         # CASE 7: Testing mixed storage.
         # Incoming Moves (from Storage 1): 1 egg
@@ -597,9 +607,9 @@ class Test(unittest.TestCase):
         self.assertEqual(customer_move_line[0].quantity, 1)
         self.assertEqual(customer_move_line[0].source, eggs_warehouse_draft)
 
-        eggs_move_draft.click('do')
-        eggs_warehouse_draft.click('do')
-        customer_move.click('do')
+        click_do(eggs_move_draft)
+        click_do(eggs_warehouse_draft)
+        click_do(customer_move)
 
         # CASE 8: Testing excess stock (with calculate_excess enabled)
         # Incoming Moves: 1 egg
@@ -622,7 +632,7 @@ class Test(unittest.TestCase):
             currency=company.currency,
             unit_price=salt.cost_price,)
         salt_storage.save()
-        salt_storage.click('do')
+        click_do(salt_storage)
 
         plan.click('recalculate')
         plan.reload()
@@ -659,7 +669,7 @@ class Test(unittest.TestCase):
 
         self.assertEqual(len(plan.lines), 0)
 
-        eggs_move_draft.click('do')
+        click_do(eggs_move_draft)
 
         excess_salt_customer = StockMove(
             product=salt,
@@ -669,4 +679,4 @@ class Test(unittest.TestCase):
             currency=company.currency,
             unit_price=salt.cost_price,)
         excess_salt_customer.save()
-        excess_salt_customer.click('do')
+        click_do(excess_salt_customer)
