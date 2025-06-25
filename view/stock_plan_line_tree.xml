@@ -4,7 +4,7 @@
     <field name="product" expand="1"/>
     <field name="origin" expand="1"/>
     <field name="destination" expand="1"/>
-    <field name="day_difference" />
-    <field name="origin_date" />
-    <field name="destination_date" />
+    <field name="day_difference" optional="0"/>
+    <field name="origin_date" optional="0"/>
+    <field name="destination_date" optional="0"/>
 </tree>

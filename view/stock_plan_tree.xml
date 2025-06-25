@@ -4,6 +4,6 @@
     <field name="correct_stock"/>
     <field name="without_stock"/>
     <field name="late_stock"/>
-    <field name="excess_stock"/>
+    <field name="excess_stock" optional="0"/>
     <field name="calculate_excess" expand="1"/>
 </tree>
