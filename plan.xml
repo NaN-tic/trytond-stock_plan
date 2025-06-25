@@ -49,8 +49,6 @@
             <!-- Menu -->
         <menuitem id="menu_stock_plan" name="Stock Plan" parent="stock.menu_stock" sequence="30" icon="tryton-list" action="act_stock_plan" />
 
-
-
         <!-- stock.plan.line -->
             <!-- Access -->
         <record model="ir.model.access" id="access_stock_plan_line">
@@ -73,60 +71,9 @@
             <field name="name">stock_plan_line_tree</field>
         </record>
 
-            <!-- Actions -->
-        <record model="ir.action.act_window" id="act_stock_plan_line">
-            <field name="name">Stock Plan Line</field>
-            <field name="res_model">stock.plan.line</field>
-        </record>
-        <record model="ir.action.act_window.view" id="act_stock_plan_line_form">
-            <field name="sequence" eval="20"/>
-            <field name="view" ref="view_stock_plan_line_form"/>
-            <field name="act_window" ref="act_stock_plan_line" />
-        </record>
-        <record model="ir.action.act_window.view" id="act_stock_plan_line_tree">
-            <field name="sequence" eval="10"/>
-            <field name="view" ref="view_stock_plan_line_tree"/>
-            <field name="act_window" ref="act_stock_plan_line" />
-        </record>
-
-            <!-- Tabs -->
-        <record model="ir.action.act_window.domain" id="act_stock_plan_line_domain_without_stock">
-            <field name="name">Without Stock</field>
-            <field name="sequence" eval="10"/>
-            <field name="domain" eval="[('origin', '=', None)]" pyson="1"/>
-            <field name="count" eval="True"/>
-            <field name="act_window" ref="act_stock_plan_line"/>
-        </record>
-        <record model="ir.action.act_window.domain" id="act_stock_plan_line_domain_late_stock">
-            <field name="name">Late Stock</field>
-            <field name="sequence" eval="20"/>
-            <field name="domain" eval="[('day_difference', '&lt;', 0)]" pyson="1"/>
-            <field name="count" eval="True"/>
-            <field name="act_window" ref="act_stock_plan_line"/>
-        </record>
-        <record model="ir.action.act_window.domain" id="act_stock_plan_line_domain_surplus_stock">
-            <field name="name">Excess Stock</field>
-            <field name="sequence" eval="30"/>
-            <field name="domain" eval="[('destination', '=', None)]" pyson="1"/>
-            <field name="count" eval="True"/>
-            <field name="act_window" ref="act_stock_plan_line"/>
-        </record>
-        <record model="ir.action.act_window.domain" id="act_stock_plan_line_domain_all">
-            <field name="name">All</field>
-            <field name="sequence" eval="9999"/>
-            <field name="domain" eval="[]" pyson="1"/>
-            <field name="count" eval="False"/>
-            <field name="act_window" ref="act_stock_plan_line"/>
-        </record>
-
-            <!-- Menu -->
-        <menuitem id="menu_stock_plan_line" name="Stock Plan Line" parent="menu_stock_plan" sequence="1" icon="tryton-list" action="act_stock_plan_line" />
-
-
         <!-- stock.plan: Related Records -->
-            <!-- TODO: Review with Albert in order to establish this or the normal view + menu entry-->
         <record model="ir.action.act_window" id="act_plan_line_relate">
-            <field name="name">Open lines</field>
+            <field name="name">Plan Lines</field>
             <field name="res_model">stock.plan.line</field>
             <field name="domain" eval="[('plan', 'in', Eval('active_ids'))]" pyson="1"/>
         </record>
