@@ -80,6 +80,7 @@ class StockPlan(ModelSQL, ModelView):
     @classmethod
     def _recalculate(cls, plan):
         pool = Pool()
+        Date = pool.get('ir.date')
         Product = pool.get('product.product')
         StockMove = pool.get('stock.move')
         StockLocation = pool.get('stock.location')
@@ -98,7 +99,7 @@ class StockPlan(ModelSQL, ModelView):
             ('id', 'ASC'),
         ])
         lines = []
-        today = StockPlanLine._default_date()
+        today = Date.today()
 
         outgoing = defaultdict(list)
         incoming = defaultdict(list)
@@ -221,11 +222,17 @@ class StockPlanLine(ModelSQL, ModelView):
     __name__ = 'stock.plan.line'
 
     destination = fields.Many2One('stock.move', 'Destination Move')
-    destination_date = fields.Date('Destination Date', readonly=True) # TODO: Domains
+    destination_date = fields.Date('Destination Date', readonly=True)
+    destination_document = fields.Function(
+        fields.Reference('Destination Document', 'get_document_refs'),
+        'get_document')
     day_difference = fields.Function(fields.Integer('Day Difference'),
         'get_day_difference', searcher='search_day_difference')
-    origin = fields.Reference('Origin', 'get_origin')
-    origin_date = fields.Date('Origin Date', readonly=True) # TODO: Domains
+    origin = fields.Reference('Origin', 'get_origin') # TODO: Source
+    origin_date = fields.Date('Origin Date', readonly=True)
+    origin_document = fields.Function(
+        fields.Reference('Origin Document', 'get_document_refs'),
+        'get_document')
     plan = fields.Many2One('stock.plan', 'Stock Plan',
         required=True, ondelete='CASCADE')
     product = fields.Many2One('product.product', 'Product',
@@ -234,11 +241,17 @@ class StockPlanLine(ModelSQL, ModelView):
     uom = fields.Function(fields.Many2One('product.uom', 'Quantity UoM',
         help='The Unit of Measure for the quantities.'), 'get_uom')
 
-    @staticmethod
-    def _default_date():
+    @classmethod
+    def get_document_refs(cls):
         pool = Pool()
-        Date = pool.get('ir.date')
-        return Date.today()
+        Model = pool.get('ir.model')
+        StockMove = pool.get('stock.move')
+
+        models = StockMove._get_document_origin() + StockMove._get_document()
+        models = Model.search([
+            ('model', 'in', models),
+        ])
+        return [(None, '')] + [(m.model, m.name) for m in models]
 
     @classmethod
     def get_origin(cls):
@@ -250,6 +263,16 @@ class StockPlanLine(ModelSQL, ModelView):
     @classmethod
     def _get_origin(cls):
         return ['stock.move', 'stock.location']
+
+    def get_document(self, name):
+        if name == 'destination_document':
+            field = self.destination
+        elif name == 'origin_document':
+            field = self.origin
+        if not (field and hasattr(field, 'document')
+                and hasattr(field, 'document_origin')):
+            return
+        return field.document or field.document_origin
 
     def get_day_difference(self, name):
         if not self.origin_date or not self.destination_date:
