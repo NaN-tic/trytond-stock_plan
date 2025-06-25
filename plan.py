@@ -15,8 +15,8 @@ class StockPlan(ModelSQL, ModelView):
         help=(
             'If checked, the plan will include all stock from warehouses, '
             'even if they do not have destination.')) # TODO: Subject to change: may be a configuration.
-    correct_stock = fields.Function(
-        fields.Integer('Correct Stock'), 'get_correct_stock')
+    correct_lines = fields.Function(
+        fields.Integer('Correct Lines'), 'get_correct_lines')
     excess_stock = fields.Function(fields.Integer('Excess Stock', states={
             'invisible': ~Eval('calculate_excess', True)
         }), 'get_excess_stock')
@@ -40,7 +40,7 @@ class StockPlan(ModelSQL, ModelView):
     def default_calculate_excess():
         return True
 
-    def get_correct_stock(self, name):
+    def get_correct_lines(self, name):
         if not self.lines:
             return 0
         correct = [
@@ -237,7 +237,7 @@ class StockPlanLine(ModelSQL, ModelView):
     product = fields.Many2One('product.product', 'Product',
         required=True, ondelete='CASCADE')
     quantity = fields.Integer('Quantity', required=True)
-    uom = fields.Function(fields.Many2One('product.uom', 'Quantity UoM',
+    uom = fields.Function(fields.Many2One('product.uom', 'UoM',
         help='The Unit of Measure for the quantities.'), 'get_uom')
 
     @classmethod

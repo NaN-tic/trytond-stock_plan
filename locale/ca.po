@@ -1,0 +1,144 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Ismael Marcos Martínez <ismael.marcos@nan-tic.com>\n"
+"Language-Team: \n"
+"Language: ca\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.2.2\n"
+
+msgctxt "field:stock.plan,calculate_excess:"
+msgid "Calculate Excess"
+msgstr "Calcula l'excés"
+
+msgctxt "field:stock.plan,correct_lines:"
+msgid "Correct Lines"
+msgstr "Línies correctes"
+
+msgctxt "field:stock.plan,excess_stock:"
+msgid "Excess Stock"
+msgstr "Excés d'estoc"
+
+msgctxt "field:stock.plan,late_stock:"
+msgid "Late Stock"
+msgstr "Estoc tardà"
+
+msgctxt "field:stock.plan,lines:"
+msgid "Lines"
+msgstr "Línies"
+
+msgctxt "field:stock.plan,total_lines:"
+msgid "Total Lines"
+msgstr "Línies totals"
+
+msgctxt "field:stock.plan,without_stock:"
+msgid "Without Stock"
+msgstr "Sense estoc"
+
+msgctxt "field:stock.plan.line,day_difference:"
+msgid "Day Difference"
+msgstr "Dies de diferència"
+
+msgctxt "field:stock.plan.line,destination:"
+msgid "Destination Move"
+msgstr "Moviment de destinació"
+
+msgctxt "field:stock.plan.line,destination_date:"
+msgid "Destination Date"
+msgstr "Data de destinació"
+
+msgctxt "field:stock.plan.line,destination_document:"
+msgid "Destination Document"
+msgstr "Document de destinació"
+
+msgctxt "field:stock.plan.line,plan:"
+msgid "Stock Plan"
+msgstr "Pla d'estoc"
+
+msgctxt "field:stock.plan.line,product:"
+msgid "Product"
+msgstr "Producte"
+
+msgctxt "field:stock.plan.line,quantity:"
+msgid "Quantity"
+msgstr "Quantitat"
+
+msgctxt "field:stock.plan.line,source:"
+msgid "Source"
+msgstr "Origen"
+
+msgctxt "field:stock.plan.line,source_date:"
+msgid "Source Date"
+msgstr "Data d'origen"
+
+msgctxt "field:stock.plan.line,source_document:"
+msgid "Source Document"
+msgstr "Document d'origen"
+
+msgctxt "field:stock.plan.line,uom:"
+msgid "UoM"
+msgstr "UdM"
+
+msgctxt "help:stock.plan,calculate_excess:"
+msgid ""
+"If checked, the plan will include all stock from warehouses, even if they "
+"do not have destination."
+msgstr ""
+"Si està marcat, el pla inclourà tot l'estoc dels magatzems, fins i tot si "
+"no tenen destinació."
+
+msgctxt "help:stock.plan.line,uom:"
+msgid "The Unit of Measure for the quantities."
+msgstr "La unitat de mesura per a les quantitats."
+
+msgctxt "model:ir.action,name:act_plan_line_relate"
+msgid "Plan Lines"
+msgstr "Línies del pla"
+
+msgctxt "model:ir.action,name:act_stock_plan"
+msgid "Stock Plan"
+msgstr "Pla d'estoc"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_plan_line_relate_domain_all"
+msgid "All"
+msgstr "Tot"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:"
+"act_plan_line_relate_domain_late_stock"
+msgid "Late Stock"
+msgstr "Estoc tardà"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:"
+"act_plan_line_relate_domain_surplus_stock"
+msgid "Excess Stock"
+msgstr "Excés d'estoc"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:"
+"act_plan_line_relate_domain_without_stock"
+msgid "Without Stock"
+msgstr "Sense estoc"
+
+msgctxt "model:ir.model.button,string:recalculate_button"
+msgid "Recalculate"
+msgstr "Recalcula"
+
+msgctxt "model:ir.ui.menu,name:menu_stock_plan"
+msgid "Stock Plan"
+msgstr "Pla d'estoc"
+
+msgctxt "model:stock.plan,name:"
+msgid "Stock Plan"
+msgstr "Pla d'estoc"
+
+msgctxt "model:stock.plan.line,name:"
+msgid "Stock Plan Line"
+msgstr "Línia del pla d'estoc"
