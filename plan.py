@@ -212,7 +212,7 @@ class StockPlanLine(ModelSQL, ModelView):
     destination_date = fields.Date('Destination Date', readonly=True) # TODO: Domains
     day_difference = fields.Function(fields.Integer('Day Difference'),
         'get_day_difference', searcher='search_day_difference')
-    origin = fields.Reference('Origin Move', 'get_origin')
+    origin = fields.Reference('Origin', 'get_origin')
     origin_date = fields.Date('Origin Date', readonly=True) # TODO: Domains
     plan = fields.Many2One('stock.plan', 'Stock Plan',
         required=True, ondelete='CASCADE')
