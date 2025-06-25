@@ -9,8 +9,8 @@
     </group>
     <newline/>
     <group id="dates" col="-1">
-        <label name="origin_date"/>
-        <field name="origin_date" xexpand="0"/>
+        <label name="source_date"/>
+        <field name="source_date" xexpand="0"/>
         <label name="destination_date"/>
         <field name="destination_date" xexpand="0"/>
         <label name="day_difference"/>
@@ -18,8 +18,8 @@
     </group>
     <newline/>
     <group id="moves_info" col="-1">
-        <label name="origin"/>
-        <field name="origin"/>
+        <label name="source"/>
+        <field name="source"/>
         <label name="destination"/>
         <field name="destination"/>
     </group>

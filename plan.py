@@ -46,9 +46,9 @@ class StockPlan(ModelSQL, ModelView):
             return 0
         correct = [
             line for line in self.lines
-            if line.origin and line.destination and (
+            if line.source and line.destination and (
                 (line.day_difference or 0) > 0 or
-                line.origin.__class__.__name__ == 'stock.location')
+                line.source.__class__.__name__ == 'stock.location')
         ]
         return len(correct)
 
@@ -60,16 +60,16 @@ class StockPlan(ModelSQL, ModelView):
     def get_late_stock(self, name):
         lates = [
             line for line in self.lines
-            if line.origin and line.destination and (
+            if line.source and line.destination and (
                 line.day_difference is None or line.day_difference < 0) and
-                line.origin.__class__.__name__ == 'stock.move']
+                line.source.__class__.__name__ == 'stock.move']
         return len(lates)
 
     def get_total_lines(self, name):
         return len(self.lines)
 
     def get_without_stock(self, name):
-        return len([line for line in self.lines if not line.origin])
+        return len([line for line in self.lines if not line.source])
 
     @classmethod
     @ModelView.button
@@ -150,7 +150,7 @@ class StockPlan(ModelSQL, ModelView):
 
                     lines.append(
                         StockPlanLine(plan=plan, quantity=quantity,
-                            origin=warehouse, destination=move,
+                            source=warehouse, destination=move,
                             product=move.product,
                             destination_date=(
                                 move.effective_date or move.planned_date
@@ -173,9 +173,9 @@ class StockPlan(ModelSQL, ModelView):
                     ref = income['ref']
                     lines.append(
                         StockPlanLine(plan=plan, quantity=quantity,
-                            origin=ref, destination=move,
+                            source=ref, destination=move,
                             product=move.product,
-                            origin_date=(
+                            source_date=(
                                 ref.effective_date or ref.planned_date
                             ),
                             destination_date=(
@@ -195,7 +195,7 @@ class StockPlan(ModelSQL, ModelView):
             if plan.calculate_excess:
                 lines.extend([
                     StockPlanLine(plan=plan, quantity=stock_quantity,
-                        origin=warehouse, product=Product(key[1]))
+                        source=warehouse, product=Product(key[1]))
                     for key, stock_quantity in stocks.items()
                     if key[0] == warehouse.id
                 ])
@@ -204,8 +204,8 @@ class StockPlan(ModelSQL, ModelView):
         if plan.calculate_excess:
             lines.extend([
                 StockPlanLine(plan=plan, quantity=income['quantity'],
-                    origin=income['ref'], product=income['ref'].product,
-                    origin_date=income['ref'].effective_date or income['ref'].planned_date)
+                    source=income['ref'], product=income['ref'].product,
+                    source_date=income['ref'].effective_date or income['ref'].planned_date)
                 for incomes in incoming.values()
                 for income in incomes
             ])
@@ -228,10 +228,10 @@ class StockPlanLine(ModelSQL, ModelView):
         'get_document')
     day_difference = fields.Function(fields.Integer('Day Difference'),
         'get_day_difference', searcher='search_day_difference')
-    origin = fields.Reference('Origin', 'get_origin') # TODO: Source
-    origin_date = fields.Date('Origin Date', readonly=True)
-    origin_document = fields.Function(
-        fields.Reference('Origin Document', 'get_document_refs'),
+    source = fields.Reference('Source', 'get_source')
+    source_date = fields.Date('Source Date', readonly=True)
+    source_document = fields.Function(
+        fields.Reference('Source Document', 'get_document_refs'),
         'get_document')
     plan = fields.Many2One('stock.plan', 'Stock Plan',
         required=True, ondelete='CASCADE')
@@ -254,30 +254,30 @@ class StockPlanLine(ModelSQL, ModelView):
         return [(None, '')] + [(m.model, m.name) for m in models]
 
     @classmethod
-    def get_origin(cls):
+    def get_source(cls):
         pool = Pool()
         Model = pool.get('ir.model')
-        models = Model.search([ ('model', 'in', cls._get_origin()) ])
+        models = Model.search([ ('model', 'in', cls._get_source()) ])
         return [('', '')] + [(model.model, model.name) for model in models]
 
     @classmethod
-    def _get_origin(cls):
+    def _get_source(cls):
         return ['stock.move', 'stock.location']
 
     def get_document(self, name):
         if name == 'destination_document':
             field = self.destination
-        elif name == 'origin_document':
-            field = self.origin
+        elif name == 'source_document':
+            field = self.source
         if not (field and hasattr(field, 'document')
                 and hasattr(field, 'document_origin')):
             return
         return field.document or field.document_origin
 
     def get_day_difference(self, name):
-        if not self.origin_date or not self.destination_date:
+        if not self.source_date or not self.destination_date:
             return
-        day_difference = self.destination_date - self.origin_date
+        day_difference = self.destination_date - self.source_date
         return day_difference.total_seconds() // (24 * 3600)
 
     def get_uom(self, name):
@@ -292,7 +292,7 @@ class StockPlanLine(ModelSQL, ModelView):
         _field, operator, value = clause
         Operator = fields.SQL_OPERATORS[operator]
 
-        day_difference = table.destination_date - table.origin_date
+        day_difference = table.destination_date - table.source_date
 
         query = (
             table.select(table.id,

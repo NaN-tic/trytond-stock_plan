@@ -81,14 +81,14 @@
         <record model="ir.action.act_window.domain" id="act_plan_line_relate_domain_without_stock">
             <field name="name">Without Stock</field>
             <field name="sequence" eval="10"/>
-            <field name="domain" eval="[('origin', '=', None)]" pyson="1"/>
+            <field name="domain" eval="[('source', '=', None)]" pyson="1"/>
             <field name="count" eval="True"/>
             <field name="act_window" ref="act_plan_line_relate"/>
         </record>
         <record model="ir.action.act_window.domain" id="act_plan_line_relate_domain_late_stock">
             <field name="name">Late Stock</field>
             <field name="sequence" eval="20"/>
-            <field name="domain" eval="[('origin', 'like', 'stock.move,%'), ('destination', '!=', None), ['OR', ('day_difference', '&lt;', 0), ('day_difference', '=', None)]]" pyson="1"/>
+            <field name="domain" eval="[('source', 'like', 'stock.move,%'), ('destination', '!=', None), ['OR', ('day_difference', '&lt;', 0), ('day_difference', '=', None)]]" pyson="1"/>
             <field name="count" eval="True"/>
             <field name="act_window" ref="act_plan_line_relate"/>
         </record>

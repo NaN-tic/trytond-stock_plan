@@ -70,7 +70,7 @@ class Test(unittest.TestCase):
         # Create stock plan
         plan = StockPlan()
 
-        # CASE 1: Testing origin as stock moves.
+        # CASE 1: Testing source as stock moves.
         # Incoming Moves (x1): 1 egg
         # Storage: None
         # Customer: 1 egg
@@ -98,13 +98,13 @@ class Test(unittest.TestCase):
         self.assertEqual(len(plan.lines), 1)
         self.assertEqual(plan.lines[0].product, eggs)
         self.assertEqual(plan.lines[0].quantity, 1)
-        self.assertEqual(plan.lines[0].origin, eggs_move_draft)
+        self.assertEqual(plan.lines[0].source, eggs_move_draft)
         self.assertEqual(plan.lines[0].destination, customer_move)
 
         eggs_move_draft.click('do')
         customer_move.click('do')
 
-        # CASE 2: Testing origin as storage.
+        # CASE 2: Testing source as storage.
         # Incoming Moves: None
         # Storage: 1 egg
         # Customer: 1 egg
@@ -133,12 +133,12 @@ class Test(unittest.TestCase):
         self.assertEqual(len(plan.lines), 1)
         self.assertEqual(plan.lines[0].product, eggs)
         self.assertEqual(plan.lines[0].quantity, 1)
-        self.assertEqual(plan.lines[0].origin, warehouse_location)
+        self.assertEqual(plan.lines[0].source, warehouse_location)
         self.assertEqual(plan.lines[0].destination, customer_move)
 
         customer_move.click('do')
 
-        # CASE 3: Testing mixed origin.
+        # CASE 3: Testing mixed source.
         # Incoming Moves (x1): 1 egg, 100g salt
         # Storage: 1 egg, 100g salt
         # Customer: 2 egg, 200g salt
@@ -208,12 +208,12 @@ class Test(unittest.TestCase):
 
             # Check plan lines for incoming moves
         eggs_move_line = StockPlanLine.find([
-            ('origin', '=', eggs_move_draft),
+            ('source', '=', eggs_move_draft),
             ('destination', '=', customer_move_eggs.id),
             ('product', '=', eggs.id),
         ])
         salt_move_line = StockPlanLine.find([
-            ('origin', '=', salt_move_draft),
+            ('source', '=', salt_move_draft),
             ('destination', '=', customer_move_salt.id),
             ('product', '=', salt.id),
         ])
@@ -226,12 +226,12 @@ class Test(unittest.TestCase):
 
             # Check plan lines for storage moves
         eggs_storage_line = StockPlanLine.find([
-            ('origin', '=', warehouse_location),
+            ('source', '=', warehouse_location),
             ('destination', '=', customer_move_eggs.id),
             ('product', '=', eggs.id),
         ])
         salt_storage_line = StockPlanLine.find([
-            ('origin', '=', warehouse_location),
+            ('source', '=', warehouse_location),
             ('destination', '=', customer_move_salt.id),
             ('product', '=', salt.id),
         ])
@@ -247,7 +247,7 @@ class Test(unittest.TestCase):
         customer_move_eggs.click('do')
         customer_move_salt.click('do')
 
-        # CASE 4: Testing mixed origin with excess stock.
+        # CASE 4: Testing mixed source with excess stock.
         # Incoming Moves (x2): 4 eggs, 400g salt
         # Storage: 1 eggs, 50g salt
         # Customer: 4 eggs, 400g salt
@@ -320,36 +320,36 @@ class Test(unittest.TestCase):
 
             # Check plan lines for incoming moves
         eggs_move_lines = StockPlanLine.find([
-            ('origin', 'in', (eggs_move_draft, eggs_move_draft_copy)),
+            ('source', 'in', (eggs_move_draft, eggs_move_draft_copy)),
             ('destination', '=', customer_move_eggs.id),
             ('product', '=', eggs.id),
         ], order=[('quantity', 'DESC')])
         salt_move_lines = StockPlanLine.find([
-            ('origin', 'in', (salt_move_draft, salt_move_draft_copy)),
+            ('source', 'in', (salt_move_draft, salt_move_draft_copy)),
             ('destination', '=', customer_move_salt.id),
             ('product', '=', salt.id),
         ], order=[('quantity', 'DESC')])
 
         self.assertEqual(len(eggs_move_lines), 2)
         self.assertEqual(eggs_move_lines[0].quantity, 2)
-        self.assertEqual(eggs_move_lines[0].origin, eggs_move_draft)
+        self.assertEqual(eggs_move_lines[0].source, eggs_move_draft)
         self.assertEqual(eggs_move_lines[1].quantity, 1)
-        self.assertEqual(eggs_move_lines[1].origin, eggs_move_draft_copy)
+        self.assertEqual(eggs_move_lines[1].source, eggs_move_draft_copy)
 
         self.assertEqual(len(salt_move_lines), 2)
         self.assertEqual(salt_move_lines[0].quantity, 200)
-        self.assertEqual(salt_move_lines[0].origin, salt_move_draft)
+        self.assertEqual(salt_move_lines[0].source, salt_move_draft)
         self.assertEqual(salt_move_lines[1].quantity, 150)
-        self.assertEqual(salt_move_lines[1].origin, salt_move_draft_copy)
+        self.assertEqual(salt_move_lines[1].source, salt_move_draft_copy)
 
             # Check plan lines for stock moves
         eggs_storage_line = StockPlanLine.find([
-            ('origin', '=', warehouse_location),
+            ('source', '=', warehouse_location),
             ('destination', '=', customer_move_eggs.id),
             ('product', '=', eggs.id),
         ])
         salt_storage_line = StockPlanLine.find([
-            ('origin', '=', warehouse_location),
+            ('source', '=', warehouse_location),
             ('destination', '=', customer_move_salt.id),
             ('product', '=', salt.id),
         ])
@@ -362,12 +362,12 @@ class Test(unittest.TestCase):
 
             # Check for excess stock
         excess_eggs = StockPlanLine.find([
-            ('origin', '=', eggs_move_draft_copy),
+            ('source', '=', eggs_move_draft_copy),
             ('destination', '=', None),
             ('product', '=', eggs.id),
         ])
         excess_salt = StockPlanLine.find([
-            ('origin', '=', salt_move_draft_copy),
+            ('source', '=', salt_move_draft_copy),
             ('destination', '=', None),
             ('product', '=', salt.id),
         ])
@@ -426,7 +426,7 @@ class Test(unittest.TestCase):
         self.assertEqual(plan.lines[0].product, eggs)
         self.assertEqual(plan.lines[0].quantity, 1)
         self.assertEqual(plan.lines[0].destination, customer_move)
-        self.assertIsNone(plan.lines[0].origin)
+        self.assertIsNone(plan.lines[0].source)
 
         customer_move.click('cancel')
 
@@ -456,7 +456,7 @@ class Test(unittest.TestCase):
             self.assertEqual(len(lines), 1)
             self.assertEqual(lines[0].product, eggs)
             self.assertEqual(lines[0].quantity, 1)
-            self.assertEqual(lines[0].origin, eggs_move_draft)
+            self.assertEqual(lines[0].source, eggs_move_draft)
             self.assertEqual(lines[0].destination, customer_move)
 
         late_date = datetime(year=2034, month=10, day=19).date()
@@ -580,7 +580,7 @@ class Test(unittest.TestCase):
         self.assertEqual(len(plan.lines), 2)
 
         eggs_move_line = StockPlanLine.find([
-            ('origin', '=', eggs_move_draft),
+            ('source', '=', eggs_move_draft),
         ])
 
         self.assertEqual(len(eggs_move_line), 1)
@@ -595,7 +595,7 @@ class Test(unittest.TestCase):
         self.assertEqual(len(customer_move_line), 1)
         self.assertEqual(customer_move_line[0].product, eggs)
         self.assertEqual(customer_move_line[0].quantity, 1)
-        self.assertEqual(customer_move_line[0].origin, eggs_warehouse_draft)
+        self.assertEqual(customer_move_line[0].source, eggs_warehouse_draft)
 
         eggs_move_draft.click('do')
         eggs_warehouse_draft.click('do')
@@ -635,7 +635,7 @@ class Test(unittest.TestCase):
 
         self.assertEqual(len(eggs_move_line), 1)
         self.assertEqual(eggs_move_line[0].quantity, 1)
-        self.assertEqual(eggs_move_line[0].origin, eggs_move_draft)
+        self.assertEqual(eggs_move_line[0].source, eggs_move_draft)
         self.assertIsNone(eggs_move_line[0].destination)
 
         salt_line = StockPlanLine.find([
@@ -644,7 +644,7 @@ class Test(unittest.TestCase):
 
         self.assertEqual(len(salt_line), 1)
         self.assertEqual(salt_line[0].quantity, 100)
-        self.assertEqual(salt_line[0].origin, warehouse_location)
+        self.assertEqual(salt_line[0].source, warehouse_location)
         self.assertIsNone(salt_line[0].destination)
 
         # CASE 9: Testing excess stock (with calculate_excess disabled)
