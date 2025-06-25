@@ -46,7 +46,11 @@ class StockPlan(ModelSQL, ModelView):
         return len([line for line in self.lines if not line.destination])
 
     def get_late_stock(self, name):
-        return len([line for line in self.lines if line.day_difference is None or line.day_difference < 0])
+        lates = [
+            line for line in self.lines
+            if line.origin and line.destination and (
+                line.day_difference is None or line.day_difference < 0)]
+        return len(lates)
 
     def get_total_lines(self, name):
         return len(self.lines)
