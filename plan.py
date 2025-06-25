@@ -50,7 +50,7 @@ class StockPlan(ModelSQL, ModelView):
         return len([line for line in self.lines if not line.destination])
 
     def get_late_stock(self, name):
-        return len([line for line in self.lines if line.day_difference < 0])
+        return len([line for line in self.lines if line.day_difference is None or line.day_difference < 0])
 
     def get_total_lines(self, name):
         return len(self.lines)
@@ -105,7 +105,7 @@ class StockPlan(ModelSQL, ModelView):
 
             if to_warehouse and from_warehouse != to_warehouse:
                 key = (to_warehouse.id, move.product.id)
-                incoming[key].append({ 'ref': move, 'quantity': move.quantity })
+                incoming[key].append({ 'ref': move, 'quantity': move.internal_quantity })
 
         for warehouse in warehouses:
             products_filter = needed_products.get(warehouse.id, None)
@@ -125,7 +125,7 @@ class StockPlan(ModelSQL, ModelView):
             moves = outgoing[warehouse]
             for move in moves:
                 key = (warehouse.id, move.product.id)
-                remain_quantity = move.quantity
+                remain_quantity = move.internal_quantity
 
                 if key in stocks:
                     quantity = min(remain_quantity, stocks[key])
@@ -241,9 +241,9 @@ class StockPlanLine(ModelSQL, ModelView):
 
     def get_day_difference(self, name):
         if not (self.origin_date and self.destination_date):
-            return 0
+            return
         elif self.origin_date and not self.destination_date:
-            return 0
+            return
 
         destination_date = self.destination_date or self._default_date()
         origin_date = self.origin_date or self._default_date()
@@ -253,7 +253,7 @@ class StockPlanLine(ModelSQL, ModelView):
 
     def get_uom(self, name):
         if not self.product:
-            return None
+            return
         return self.product.default_uom
 
     @classmethod
