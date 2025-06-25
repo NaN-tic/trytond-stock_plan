@@ -1,6 +1,7 @@
 <tree>
     <button name="recalculate"/>
     <field name="total_lines"/>
+    <field name="correct_stock"/>
     <field name="without_stock"/>
     <field name="late_stock"/>
     <field name="excess_stock"/>

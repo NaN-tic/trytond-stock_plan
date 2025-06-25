@@ -1,7 +1,6 @@
 from collections import defaultdict
 
-from sql.conditionals import Coalesce
-from sql.operators import And, NotEqual, Null
+from sql.operators import And
 from trytond.model import ModelSQL, ModelView, fields
 from trytond.pool import Pool
 from trytond.pyson import Eval
@@ -17,6 +16,8 @@ class StockPlan(ModelSQL, ModelView):
         help=(
             'If checked, the plan will include all stock from warehouses, '
             'even if they do not have destination.')) # TODO: Subject to change: may be a configuration.
+    correct_stock = fields.Function(
+        fields.Integer('Correct Stock'), 'get_correct_stock')
     excess_stock = fields.Function(fields.Integer('Excess Stock', states={
             'invisible': ~Eval('calculate_excess', True)
         }), 'get_excess_stock')
@@ -40,6 +41,17 @@ class StockPlan(ModelSQL, ModelView):
     def default_calculate_excess():
         return True
 
+    def get_correct_stock(self, name):
+        if not self.lines:
+            return 0
+        correct = [
+            line for line in self.lines
+            if line.origin and line.destination and (
+                (line.day_difference or 0) > 0 or
+                line.origin.__class__.__name__ == 'stock.location')
+        ]
+        return len(correct)
+
     def get_excess_stock(self, name):
         if not self.calculate_excess:
             return
@@ -49,7 +61,8 @@ class StockPlan(ModelSQL, ModelView):
         lates = [
             line for line in self.lines
             if line.origin and line.destination and (
-                line.day_difference is None or line.day_difference < 0)]
+                line.day_difference is None or line.day_difference < 0) and
+                line.origin.__class__.__name__ == 'stock.move']
         return len(lates)
 
     def get_total_lines(self, name):
@@ -137,7 +150,7 @@ class StockPlan(ModelSQL, ModelView):
                     lines.append(
                         StockPlanLine(plan=plan, quantity=quantity,
                             origin=warehouse, destination=move,
-                            product=move.product, origin_date=today,
+                            product=move.product,
                             destination_date=(
                                 move.effective_date or move.planned_date
                             )))
@@ -181,8 +194,7 @@ class StockPlan(ModelSQL, ModelView):
             if plan.calculate_excess:
                 lines.extend([
                     StockPlanLine(plan=plan, quantity=stock_quantity,
-                        origin=warehouse, product=Product(key[1]),
-                        origin_date=today)
+                        origin=warehouse, product=Product(key[1]))
                     for key, stock_quantity in stocks.items()
                     if key[0] == warehouse.id
                 ])
@@ -252,23 +264,16 @@ class StockPlanLine(ModelSQL, ModelView):
 
     @classmethod
     def search_day_difference(cls, name, clause):
-        pool = Pool()
-        Date = pool.get('ir.date')
-
         table = cls.__table__()
-        today = Date.today()
 
         _field, operator, value = clause
         Operator = fields.SQL_OPERATORS[operator]
 
-        destination_date = Coalesce(table.destination_date, today)
-        origin_date = Coalesce(table.origin_date, today)
-        day_difference = destination_date - origin_date
+        day_difference = table.destination_date - table.origin_date
 
         query = (
             table.select(table.id,
                 where=(And([
-                    Operator(day_difference,value),
-                    NotEqual(table.destination_date, Null)])
+                    Operator(day_difference, value)])
                 )))
         return [('id', 'in', query)]
