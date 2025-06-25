@@ -40,10 +40,6 @@ class StockPlan(ModelSQL, ModelView):
     def default_calculate_excess():
         return True
 
-    # TODO: Review with Albert
-    def get_rec_name(self, name):
-        return 'Stock Plan %s' % self.id
-
     def get_excess_stock(self, name):
         if not self.calculate_excess:
             return
