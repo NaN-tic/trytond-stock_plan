@@ -95,7 +95,7 @@ class StockPlan(ModelSQL, ModelView):
     @ModelView.button
     def recalculate(cls, plans):
         for plan in plans:
-            cls._recalculate(plan)
+            cls.__queue__._recalculate(plan)
 
     @classmethod
     def _recalculate(cls, plan):
