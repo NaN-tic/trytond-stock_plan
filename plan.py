@@ -4,6 +4,9 @@ from trytond.model import ModelSQL, ModelView, fields
 from trytond.pool import Pool
 from trytond.pyson import Eval
 from trytond.transaction import Transaction
+from trytond.exceptions import UserError
+from trytond.i18n import gettext
+from trytond.pyson import PYSONEncoder
 
 
 # TODO: Add helps
@@ -267,6 +270,9 @@ class StockPlanLine(ModelSQL, ModelView):
     def __setup__(cls):
         super().__setup__()
         cls.__access__.add('plan')
+        cls._buttons.update({
+            'destination_relate': {},
+        })
 
     @classmethod
     def get_document_refs(cls):
@@ -311,6 +317,31 @@ class StockPlanLine(ModelSQL, ModelView):
         if not self.product:
             return
         return self.product.default_uom
+
+    @classmethod
+    @ModelView.button
+    def destination_relate(cls, lines):
+        pool = Pool()
+        Action = pool.get('ir.action')
+        ModelData = pool.get('ir.model.data')
+
+        line = lines[0]
+
+        if not line.destination:
+            raise UserError(
+                gettext('stock_plan.stock_plan_line_without_destination'))
+
+        view_id = ModelData.get_id('stock_plan', 'act_stock_plan_line')
+        action = Action(view_id).get_action_value()
+
+        action['name'] = 'Lines with destination: %s' % line.destination.rec_name
+
+        action['pyson_domain'] = PYSONEncoder().encode([
+            ('plan', '=', line.plan.id),
+            ('destination', '=', line.destination.id),
+        ])
+
+        return action
 
     @classmethod
     def search_day_difference(cls, name, clause):

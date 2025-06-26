@@ -20,4 +20,5 @@
         <label name="destination_date"/>
         <field name="destination_date" xexpand="0" widget="date"/>
     </group>
+    <button name="destination_relate" />
 </form>

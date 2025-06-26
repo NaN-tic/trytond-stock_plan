@@ -13,6 +13,29 @@
             <field name="name">stock_plan_line_tree</field>
         </record>
 
+            <!-- Actions -->
+        <record model="ir.action.act_window" id="act_stock_plan_line">
+            <field name="name">Stock Plan Line</field>
+            <field name="res_model">stock.plan.line</field>
+        </record>
+        <record model="ir.action.act_window.view" id="act_stock_plan_line_form">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="view_stock_plan_line_form"/>
+            <field name="act_window" ref="act_stock_plan_line" />
+        </record>
+        <record model="ir.action.act_window.view" id="act_stock_plan_line_list">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="view_stock_plan_line_tree"/>
+            <field name="act_window" ref="act_stock_plan_line" />
+        </record>
+
+            <!-- Buttons -->
+        <record model="ir.model.button" id="destination_relate_button">
+            <field name="name">destination_relate</field>
+            <field name="string">Open related destination lines</field>
+            <field name="model">stock.plan.line</field>
+        </record>
+
             <!-- Related Records -->
                 <!-- Lines with the same destination -->
 
