@@ -19,19 +19,20 @@ class StockPlan(ModelSQL, ModelView):
     company = fields.Many2One('company.company', 'Company',
         required=True, ondelete='CASCADE',
         help='The company for which the stock plan is created.')
-    correct_lines = fields.Function(
-        fields.Integer('Correct Lines'), 'get_correct_lines')
-    excess_stock = fields.Function(fields.Integer('Excess Stock', states={
-            'invisible': ~Eval('calculate_excess', True)
-        }), 'get_excess_stock')
-    late_stock = fields.Function(
-        fields.Integer('Late Stock'), 'get_late_stock')
     lines = fields.One2Many('stock.plan.line', 'plan', 'Lines')
+    # Counts of lines
+    correct_lines = fields.Function(
+        fields.Integer('Correct Lines'), 'get_lines_count')
+    excess_stock = fields.Function(fields.Integer('Excess Stock',
+            states={ 'invisible': ~Eval('calculate_excess', True) }),
+        'get_lines_count')
+    late_stock = fields.Function(
+        fields.Integer('Late Stock'), 'get_lines_count')
+    # If you show 'lines' in the view, you will also load the lines, not only the count.
     total_lines = fields.Function(
-        # If you show 'lines' in the view, you will also load the lines, not only the count.
-        fields.Integer('Total Lines'), 'get_total_lines')
+        fields.Integer('Total Lines'), 'get_lines_count')
     without_stock = fields.Function(
-        fields.Integer('Without Stock'), 'get_without_stock')
+        fields.Integer('Without Stock'), 'get_lines_count')
 
     @classmethod
     def __setup__(cls):
@@ -44,35 +45,51 @@ class StockPlan(ModelSQL, ModelView):
     def default_calculate_excess():
         return True
 
-    def get_correct_lines(self, name):
-        if not self.lines:
-            return 0
-        correct = [
-            line for line in self.lines
-            if line.source and line.destination and (
-                (line.day_difference or 0) > 0 or
-                line.source.__class__.__name__ == 'stock.location')
-        ]
-        return len(correct)
+    @classmethod
+    def get_lines_count(cls, plans, names):
+        pool = Pool()
+        StockPlanLine = pool.get('stock.plan.line')
 
-    def get_excess_stock(self, name):
-        if not self.calculate_excess:
-            return
-        return len([line for line in self.lines if not line.destination])
+        result = {}
+        for name in names:
+            result[name] = {}
+            for plan in plans:
+                result[name][plan.id] = 0
 
-    def get_late_stock(self, name):
-        lates = [
-            line for line in self.lines
-            if line.source and line.destination and (
-                line.day_difference is None or line.day_difference < 0) and
-                line.source.__class__.__name__ == 'stock.move']
-        return len(lates)
+                if name == 'correct_lines':
+                    result[name][plan.id] = StockPlanLine.search_count([
+                        ('plan', '=', plan.id),
+                        ('source', '!=', None),
+                        ('destination', '!=', None),
+                        ['OR',
+                            ('day_difference', '>', 0),
+                            ('source', 'like', 'stock.location,%'),
+                        ]
+                    ])
+                if name == 'excess_stock':
+                    result[name][plan.id] = StockPlanLine.search_count([
+                        ('plan', '=', plan.id),
+                        ('destination', '=', None),
+                    ])
+                if name == 'late_stock':
+                    result[name][plan.id] = StockPlanLine.search_count([
+                        ('plan', '=', plan.id),
+                        ('source', 'like', 'stock.move,%'),
+                        ('destination', '!=', None),
+                        ['OR',
+                            ('day_difference', '=', None),
+                            ('day_difference', '<', '0'),
+                        ]
+                    ])
+                if name == 'total_lines':
+                    result[name][plan.id] = len(plan.lines)
+                if name == 'without_stock':
+                    result[name][plan.id] = StockPlanLine.search_count([
+                        ('plan', '=', plan.id),
+                        ('source', '=', None),
+                    ])
 
-    def get_total_lines(self, name):
-        return len(self.lines)
-
-    def get_without_stock(self, name):
-        return len([line for line in self.lines if not line.source])
+        return result
 
     @classmethod
     @ModelView.button
