@@ -1,11 +1,13 @@
 <form>
-    <group colspan="6" col="-1">
+    <group id="main-info" colspan="6" col="-1">
         <label name="company"/>
         <field name="company" xexpand="1"/>
         <label name="calculate_excess"/>
         <field name="calculate_excess" xexpand="0"/>
     </group>
-
-    <button name="recalculate" colspan="6"/>
-    <field name="lines" colspan="6" height="500"/>
+    <group id="buttons" colspan="6" col="-1">
+        <button name="recalculate"/>
+        <link name="stock_plan.act_plan_line_relate" icon="tryton-open"/>
+    </group>
+    <field name="lines" colspan="6" height="450"/>
 </form>

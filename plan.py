@@ -42,8 +42,9 @@ class StockPlan(ModelSQL, ModelView):
         })
 
     @staticmethod
-    def default_calculate_excess():
-        return True
+    def default_company():
+        transaction = Transaction()
+        return transaction.context.get('company')
 
     @classmethod
     def get_lines_count(cls, plans, names):
@@ -95,7 +96,7 @@ class StockPlan(ModelSQL, ModelView):
     @ModelView.button
     def recalculate(cls, plans):
         for plan in plans:
-            cls.__queue__._recalculate(plan)
+            cls._recalculate(plan)
 
     @classmethod
     def _recalculate(cls, plan):

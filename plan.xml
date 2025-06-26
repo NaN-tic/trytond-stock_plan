@@ -1,5 +1,22 @@
 <tryton>
     <data>
+        <!-- stock.plan.line -->
+            <!-- Views -->
+        <record model="ir.ui.view" id="view_stock_plan_line_form">
+            <field name="model">stock.plan.line</field>
+            <field name="type">form</field>
+            <field name="name">stock_plan_line_form</field>
+        </record>
+        <record model="ir.ui.view" id="view_stock_plan_line_tree">
+            <field name="model">stock.plan.line</field>
+            <field name="type">tree</field>
+            <field name="name">stock_plan_line_tree</field>
+        </record>
+
+            <!-- Related Records -->
+                <!-- Lines with the same destination -->
+
+                <!-- Lines with the same origin -->
 
         <!-- stock.plan -->
             <!-- Access -->
@@ -68,20 +85,7 @@
             <field name="rule_group" ref="rule_group_stock_plan"/>
         </record>
 
-        <!-- stock.plan.line -->
-            <!-- Views -->
-        <record model="ir.ui.view" id="view_stock_plan_line_form">
-            <field name="model">stock.plan.line</field>
-            <field name="type">form</field>
-            <field name="name">stock_plan_line_form</field>
-        </record>
-        <record model="ir.ui.view" id="view_stock_plan_line_tree">
-            <field name="model">stock.plan.line</field>
-            <field name="type">tree</field>
-            <field name="name">stock_plan_line_tree</field>
-        </record>
-
-        <!-- stock.plan: Related Records -->
+            <!-- Related Records -->
         <record model="ir.action.act_window" id="act_plan_line_relate">
             <field name="name">Plan Lines</field>
             <field name="res_model">stock.plan.line</field>
