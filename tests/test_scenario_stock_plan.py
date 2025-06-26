@@ -70,7 +70,7 @@ class Test(unittest.TestCase):
         warehouse_location, = StockLocation.find([('code', '=', 'WH')])
 
         # Create stock plan
-        plan = StockPlan()
+        plan = StockPlan(calculate_excess=True)
 
         def click_do(move):
             try:
