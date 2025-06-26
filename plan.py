@@ -7,6 +7,7 @@ from trytond.transaction import Transaction
 
 
 # TODO: Add helps
+# TODO: Optimize fields.Functions
 class StockPlan(ModelSQL, ModelView):
     'Stock Plan'
     __name__ = 'stock.plan'
@@ -15,6 +16,9 @@ class StockPlan(ModelSQL, ModelView):
         help=(
             'If checked, the plan will include all stock from warehouses, '
             'even if they do not have destination.')) # TODO: Subject to change: may be a configuration.
+    company = fields.Many2One('company.company', 'Company',
+        required=True, ondelete='CASCADE',
+        help='The company for which the stock plan is created.')
     correct_lines = fields.Function(
         fields.Integer('Correct Lines'), 'get_correct_lines')
     excess_stock = fields.Function(fields.Integer('Excess Stock', states={
@@ -92,6 +96,7 @@ class StockPlan(ModelSQL, ModelView):
         ])
         moves = StockMove.search([
             ('state', 'not in', ('done', 'cancelled')),
+            ('company', '=', plan.company.id),
         ], order=[
             ('effective_date', 'ASC NULLS LAST'),
             ('planned_date', 'ASC NULLS LAST'),
@@ -239,6 +244,11 @@ class StockPlanLine(ModelSQL, ModelView):
     quantity = fields.Integer('Quantity', required=True)
     uom = fields.Function(fields.Many2One('product.uom', 'UoM',
         help='The Unit of Measure for the quantities.'), 'get_uom')
+
+    @classmethod
+    def __setup__(cls):
+        super().__setup__()
+        cls.__access__.add('plan')
 
     @classmethod
     def get_document_refs(cls):

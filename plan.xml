@@ -5,6 +5,14 @@
             <!-- Access -->
         <record model="ir.model.access" id="access_stock_plan">
             <field name="model">stock.plan</field>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_delete" eval="False"/>
+        </record>
+        <record model="ir.model.access" id="access_stock_plan_group_stock">
+            <field name="model">stock.plan</field>
+            <field name="group" ref="stock.group_stock"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
             <field name="perm_create" eval="True"/>
@@ -49,16 +57,18 @@
             <!-- Menu -->
         <menuitem id="menu_stock_plan" name="Stock Plan" parent="stock.menu_stock" sequence="30" icon="tryton-list" action="act_stock_plan" />
 
-        <!-- stock.plan.line -->
-            <!-- Access -->
-        <record model="ir.model.access" id="access_stock_plan_line">
-            <field name="model">stock.plan.line</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_delete" eval="True"/>
+            <!-- Rules -->
+        <record model="ir.rule.group" id="rule_group_stock_plan">
+            <field name="name">Stock Plan Rules</field>
+            <field name="model">stock.plan</field>
+            <field name="global_p" eval="True"/>
+        </record>
+        <record model="ir.rule" id="rule_stock_plan_company">
+            <field name="domain" eval="[('company', 'in', Eval('companies', []))]" pyson="1"/>
+            <field name="rule_group" ref="rule_group_stock_plan"/>
         </record>
 
+        <!-- stock.plan.line -->
             <!-- Views -->
         <record model="ir.ui.view" id="view_stock_plan_line_form">
             <field name="model">stock.plan.line</field>

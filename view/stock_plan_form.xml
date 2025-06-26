@@ -1,6 +1,11 @@
 <form>
-    <label name="calculate_excess"/>
-    <field name="calculate_excess"/>
+    <group colspan="6" col="-1">
+        <label name="company"/>
+        <field name="company" xexpand="1"/>
+        <label name="calculate_excess"/>
+        <field name="calculate_excess" xexpand="0"/>
+    </group>
+
     <button name="recalculate" colspan="6"/>
     <field name="lines" colspan="6" height="500"/>
 </form>
