@@ -118,7 +118,7 @@
         <record model="ir.action.act_window.domain" id="act_plan_line_relate_domain_without_stock">
             <field name="name">Without Stock</field>
             <field name="sequence" eval="10"/>
-            <field name="domain" eval="[('source', '=', None)]" pyson="1"/>
+            <field name="domain" eval="[('source', '=', None), ('source_date', '=', None), ('day_difference', '=', None)]" pyson="1"/>
             <field name="count" eval="True"/>
             <field name="act_window" ref="act_plan_line_relate"/>
         </record>
@@ -132,7 +132,7 @@
         <record model="ir.action.act_window.domain" id="act_plan_line_relate_domain_surplus_stock">
             <field name="name">Excess Stock</field>
             <field name="sequence" eval="30"/>
-            <field name="domain" eval="[('destination', '=', None)]" pyson="1"/>
+            <field name="domain" eval="[('destination', '=', None), ('destination_date', '=', None), ('day_difference', '=', None)]" pyson="1"/>
             <field name="count" eval="True"/>
             <field name="act_window" ref="act_plan_line_relate"/>
         </record>
