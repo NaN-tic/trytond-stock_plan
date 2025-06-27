@@ -1,25 +1,27 @@
 <form col="6">
-    <group id="moves_info" col="-1">
-        <label name="source"/>
-        <field name="source"/>
-        <label name="destination"/>
-        <field name="destination"/>
-    </group>
-    <newline/>
-    <group id="product_info" col="-1">
+    <group id="product-info" colspan="6" col="-1">
         <label name="quantity"/>
         <field name="quantity" xexpand="0"/>
         <field name="uom" xexpand="0"/>
         <label name="product"/>
         <field name="product"/>
-    </group>
-    <newline/>
-    <group id="dates" col="-1">
         <label name="day_difference"/>
-        <field name="day_difference" xexpand="0"/>
+        <field name="day_difference" xexpand="0" width="100px"/>
+    </group>
+    <group id="source-info" colspan="6" col="-1">
+        <label name="source"/>
+        <field name="source"/>
+        <label name="source_document"/>
+        <field name="source_document"/>
         <label name="source_date"/>
-        <field name="source_date" xexpand="0" widget="date"/>
+        <field name="source_date" xexpand="0" widget="date" width="100px"/>
+    </group>
+    <group id="destination-info" colspan="6" col="-1">
+        <label name="destination"/>
+        <field name="destination"/>
+        <label name="destination_document"/>
+        <field name="destination_document"/>
         <label name="destination_date"/>
-        <field name="destination_date" xexpand="0" widget="date"/>
+        <field name="destination_date" xexpand="0" widget="date" width="100px"/>
     </group>
 </form>
