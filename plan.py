@@ -28,7 +28,7 @@ class StockPlan(ModelSQL, ModelView):
         ('computed', 'Computed'),
         ('active', 'Active'),
         ('deprecated', 'Deprecated'),
-    ], 'State', required=True)
+    ], 'State', required=True, readonly=True)
     # Counts of lines
     correct_lines = fields.Function(
         fields.Integer('Correct Lines'), 'get_lines_count')

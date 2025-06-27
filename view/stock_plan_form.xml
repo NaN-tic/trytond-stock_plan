@@ -1,5 +1,7 @@
 <form>
     <group id="main-info" colspan="6" col="-1">
+        <label name="state"/>
+        <field name="state" xexpand="0"/>
         <label name="company"/>
         <field name="company" xexpand="1"/>
         <label name="calculate_excess"/>
