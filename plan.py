@@ -1,9 +1,9 @@
 from datetime import datetime
 from collections import defaultdict
 
-from trytond.model import ModelSQL, ModelView, fields
+from trytond.model import ModelSQL, ModelView, fields, Workflow
 from trytond.pool import Pool
-from trytond.pyson import Eval
+from trytond.pyson import Eval, In, Not
 from trytond.transaction import Transaction
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
@@ -12,24 +12,27 @@ from trytond.pyson import PYSONEncoder
 
 # TODO: Add helps
 # TODO: Optimize fields.Functions
-class StockPlan(ModelSQL, ModelView):
+class StockPlan(Workflow, ModelSQL, ModelView):
     'Stock Plan'
     __name__ = 'stock.plan'
 
-    calculate_excess = fields.Boolean('Calculate Excess',
+    calculate_excess = fields.Boolean('Calculate Excess', # TODO: Subject to change: may be a configuration.
+        states={ 'readonly': Not(In(Eval('state'), ['draft', 'active'])) },
         help=(
             'If checked, the plan will include all stock from warehouses, '
-            'even if they do not have destination.')) # TODO: Subject to change: may be a configuration.
+            'even if they do not have destination.'))
     company = fields.Many2One('company.company', 'Company',
         required=True, ondelete='CASCADE',
+        states={ 'readonly': Not(In(Eval('state'), ['draft', 'active'])) },
         help='The company for which the stock plan is created.')
     last_calculation = fields.DateTime('Last Calculation', readonly=True)
-    lines = fields.One2Many('stock.plan.line', 'plan', 'Lines')
+    lines = fields.One2Many('stock.plan.line', 'plan', 'Lines',
+        states={ 'readonly': Not(In(Eval('state'), ['draft', 'active'])) })
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('computed', 'Computed'),
         ('active', 'Active'),
         ('deprecated', 'Deprecated'),
+        ('cancelled', 'Cancelled'),
     ], 'State', required=True, readonly=True)
     # Counts of lines
     correct_lines = fields.Function(
@@ -48,10 +51,36 @@ class StockPlan(ModelSQL, ModelView):
     @classmethod
     def __setup__(cls):
         super().__setup__()
+        cls._transitions |= set((
+            ('draft', 'active'),
+            ('draft', 'cancelled'),
+            ('active', 'deprecated'),
+            ('cancelled', 'draft'),
+        ))
         cls._buttons.update({
+            'activate': {
+                'icon': 'tryton-ok',
+                'invisible': Eval('state') != 'draft',
+                'depends': ['state'],
+            },
+            'cancel': {
+                'icon': 'tryton-cancel',
+                'invisible': Eval('state') != 'draft',
+                'depends': ['state'],
+            },
+            'deprecate': {
+                'icon': 'tryton-cancel',
+                'invisible': Eval('state') != 'active',
+                'depends': ['state'],
+            },
+            'draft': {
+                'icon': 'tryton-forward',
+                'invisible': Eval('state') != 'cancelled',
+                'depends': ['state'],
+            },
             'recalculate': {
                 'icon': 'tryton-refresh',
-                'invisible': Eval('state') != 'computed',
+                'invisible': Eval('state') != 'draft',
             },
         })
 
@@ -109,6 +138,43 @@ class StockPlan(ModelSQL, ModelView):
                     ])
 
         return result
+
+    @classmethod
+    @ModelView.button
+    @Workflow.transition('active')
+    def activate(cls, plans):
+        cls.lock()
+
+        if len(plans) > 1:
+            raise UserError(
+                gettext('stock_plan.msg_active_transition_multiple_plans'))
+
+        error_plans = [plan for plan in plans if not plan.last_calculation]
+        if error_plans:
+            raise UserError(
+                gettext('stock_plan.msg_plan_without_calculation',
+                    plan=', '.join(error_plans)))
+
+        active_plans = cls.search([('state', '=', 'active')])
+        cls.deprecate(active_plans)
+
+    @classmethod
+    @ModelView.button
+    @Workflow.transition('cancelled')
+    def cancel(cls, plans):
+        pass
+
+    @classmethod
+    @ModelView.button
+    @Workflow.transition('deprecated')
+    def deprecate(cls, plans):
+        pass
+
+    @classmethod
+    @ModelView.button
+    @Workflow.transition('draft')
+    def draft(cls, plans):
+        pass
 
     @classmethod
     @ModelView.button

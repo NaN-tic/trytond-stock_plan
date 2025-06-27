@@ -92,10 +92,51 @@
             <field name="act_window" ref="act_stock_plan" />
         </record>
 
+            <!-- Tabs -->
+        <record model="ir.action.act_window.domain" id="act_stock_plan_draft_domain">
+            <field name="name">Drafted</field>
+            <field name="sequence" eval="10"/>
+            <field name="domain" eval="[('state', '=', 'draft')]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_stock_plan"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_stock_plan_active_domain">
+            <field name="name">Active</field>
+            <field name="sequence" eval="10"/>
+            <field name="domain" eval="[('state', '=', 'active')]" pyson="1"/>
+            <field name="act_window" ref="act_stock_plan"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_stock_plan_all_domain">
+            <field name="name">All</field>
+            <field name="sequence" eval="10"/>
+            <field name="domain" eval="[]" pyson="1"/>
+            <field name="act_window" ref="act_stock_plan"/>
+        </record>
+
             <!-- Buttons -->
         <record model="ir.model.button" id="recalculate_button">
             <field name="name">recalculate</field>
             <field name="string">Recalculate</field>
+            <field name="model">stock.plan</field>
+        </record>
+        <record model="ir.model.button" id="activate_button">
+            <field name="name">activate</field>
+            <field name="string">Activate</field>
+            <field name="model">stock.plan</field>
+        </record>
+        <record model="ir.model.button" id="cancel_button">
+            <field name="name">cancel</field>
+            <field name="string">Cancel</field>
+            <field name="model">stock.plan</field>
+        </record>
+        <record model="ir.model.button" id="deprecate_button">
+            <field name="name">deprecate</field>
+            <field name="string">Deprecate</field>
+            <field name="model">stock.plan</field>
+        </record>
+        <record model="ir.model.button" id="draft_button">
+            <field name="name">draft</field>
+            <field name="string">Draft</field>
             <field name="model">stock.plan</field>
         </record>
 
