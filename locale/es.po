@@ -16,6 +16,10 @@ msgctxt "field:stock.plan,calculate_excess:"
 msgid "Calculate Excess"
 msgstr "Calcular exceso"
 
+msgctxt "field:stock.plan,company:"
+msgid "Company"
+msgstr "Compañía"
+
 msgctxt "field:stock.plan,correct_lines:"
 msgid "Correct Lines"
 msgstr "Líneas correctas"
@@ -92,6 +96,10 @@ msgstr ""
 "Si se marca, el plan incluirá todas las existencias de los almacenes, "
 "incluso si no tienen destino."
 
+msgctxt "help:stock.plan,company:"
+msgid "The company for which the stock plan is created."
+msgstr "La empresa para la que se crea el plan de existencias."
+
 msgctxt "help:stock.plan.line,uom:"
 msgid "The Unit of Measure for the quantities."
 msgstr "La unidad de medida de las cantidades."
@@ -103,6 +111,10 @@ msgstr "Líneas del plan"
 msgctxt "model:ir.action,name:act_stock_plan"
 msgid "Stock Plan"
 msgstr "Plan de existencias"
+
+msgctxt "model:ir.action,name:act_stock_plan_line"
+msgid "Stock Plan Line"
+msgstr "Línea del plan de existencias"
 
 msgctxt ""
 "model:ir.action.act_window.domain,name:act_plan_line_relate_domain_all"
@@ -127,9 +139,45 @@ msgctxt ""
 msgid "Without Stock"
 msgstr "Sin stock"
 
+msgctxt "model:ir.message,text:title_destination_relate"
+msgid "Lines with destination \"$(destination)\""
+msgstr "Líneas con destino \"$(destination)\""
+
+msgctxt "model:ir.message,text:title_source_relate"
+msgid "Lines with source \"$(source)\""
+msgstr "Líneas con procedencia \"$(source)\""
+
+msgctxt "model:ir.message,text:warn_line_without_destination"
+msgid ""
+"You tried to open related destination lines, but the current line does not "
+"have a destination."
+msgstr ""
+"Intentó abrir líneas de destino relacionadas, pero la línea actual no tiene "
+"un destino."
+
+msgctxt "model:ir.message,text:warn_line_without_source"
+msgid ""
+"You tried to open related source lines, but the current line does not have "
+"a source."
+msgstr ""
+"Intentó abrir líneas de procedencia relacionadas, pero la línea actual no "
+"tiene una procedencia."
+
+msgctxt "model:ir.model.button,string:destination_relate_button"
+msgid "Open related destination lines"
+msgstr "Abrir líneas de destino relacionadas"
+
 msgctxt "model:ir.model.button,string:recalculate_button"
 msgid "Recalculate"
 msgstr "Recalcular"
+
+msgctxt "model:ir.model.button,string:source_relate_button"
+msgid "Open related source lines"
+msgstr "Abrir líneas de procedencia relacionadas"
+
+msgctxt "model:ir.rule.group,name:rule_group_stock_plan"
+msgid "Stock Plan Rules"
+msgstr "Reglas del plan de existencias"
 
 msgctxt "model:ir.ui.menu,name:menu_stock_plan"
 msgid "Stock Plan"
