@@ -70,15 +70,15 @@ msgstr "Cantidad"
 
 msgctxt "field:stock.plan.line,source:"
 msgid "Source"
-msgstr "Origen"
+msgstr "Procedencia"
 
 msgctxt "field:stock.plan.line,source_date:"
 msgid "Source Date"
-msgstr "Fecha de origen"
+msgstr "Fecha de procedencia"
 
 msgctxt "field:stock.plan.line,source_document:"
 msgid "Source Document"
-msgstr "Documento de origen"
+msgstr "Documento de procedencia"
 
 msgctxt "field:stock.plan.line,uom:"
 msgid "UoM"
