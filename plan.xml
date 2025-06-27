@@ -37,7 +37,7 @@
         </record>
         <record model="ir.model.button" id="source_relate_button">
             <field name="name">source_relate</field>
-            <field name="string">Source related destination lines</field>
+            <field name="string">Open related source lines</field>
             <field name="model">stock.plan.line</field>
         </record>
 
