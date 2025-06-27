@@ -1,14 +1,20 @@
-<form>
-    <group id="main-info" colspan="6" col="-1">
+<form col="6">
+    <group id="main-info" col="-1">
         <label name="state"/>
         <field name="state" xexpand="0"/>
+
         <label name="company"/>
         <field name="company" xexpand="1"/>
+    </group>
+    <newline/>
+    <group id="calc-info" col="-1">
         <label name="calculate_excess"/>
         <field name="calculate_excess" xexpand="0"/>
+        <label name="last_calculation"/>
+        <field name="last_calculation" widget="date" xexpand="0"/>
+        <field name="last_calculation" widget="time" xexpand="0"/>
+        <button name="recalculate" xexpand="1"/>
     </group>
-    <group id="buttons" colspan="6" col="-1">
-        <button name="recalculate"/>
-        <link name="stock_plan.act_plan_line_relate" icon="tryton-open"/>
-    </group>
+    <newline/>
+    <link name="stock_plan.act_plan_line_relate" icon="tryton-open"/>
 </form>

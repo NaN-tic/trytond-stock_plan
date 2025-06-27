@@ -1,3 +1,4 @@
+from datetime import datetime
 from collections import defaultdict
 
 from trytond.model import ModelSQL, ModelView, fields
@@ -22,6 +23,7 @@ class StockPlan(ModelSQL, ModelView):
     company = fields.Many2One('company.company', 'Company',
         required=True, ondelete='CASCADE',
         help='The company for which the stock plan is created.')
+    last_calculation = fields.DateTime('Last Calculation', readonly=True)
     lines = fields.One2Many('stock.plan.line', 'plan', 'Lines')
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -47,7 +49,10 @@ class StockPlan(ModelSQL, ModelView):
     def __setup__(cls):
         super().__setup__()
         cls._buttons.update({
-            'recalculate': {}
+            'recalculate': {
+                'icon': 'tryton-refresh',
+                'invisible': Eval('state') != 'computed',
+            },
         })
 
     @staticmethod
@@ -247,6 +252,7 @@ class StockPlan(ModelSQL, ModelView):
 
         StockPlanLine.save(lines)
         plan.lines = lines
+        plan.last_calculation = datetime.now()
         cls.save([plan])
 
 
