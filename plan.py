@@ -272,6 +272,7 @@ class StockPlanLine(ModelSQL, ModelView):
         cls.__access__.add('plan')
         cls._buttons.update({
             'destination_relate': {},
+            'source_relate': {},
         })
 
     @classmethod
@@ -325,22 +326,47 @@ class StockPlanLine(ModelSQL, ModelView):
         Action = pool.get('ir.action')
         ModelData = pool.get('ir.model.data')
 
+        encoder = PYSONEncoder()
         line = lines[0]
 
         if not line.destination:
             raise UserError(
-                gettext('stock_plan.stock_plan_line_without_destination'))
+                gettext('stock_plan.warn_line_without_destination'))
 
         view_id = ModelData.get_id('stock_plan', 'act_stock_plan_line')
         action = Action(view_id).get_action_value()
 
-        action['name'] = 'Lines with destination: %s' % line.destination.rec_name
-
-        action['pyson_domain'] = PYSONEncoder().encode([
+        action['name'] = gettext('stock_plan.title_destination_relate',
+            destination=line.destination.rec_name)
+        action['pyson_domain'] = encoder.encode([
             ('plan', '=', line.plan.id),
             ('destination', '=', line.destination.id),
         ])
+        return action
 
+    @classmethod
+    @ModelView.button
+    def source_relate(cls, lines):
+        pool = Pool()
+        Action = pool.get('ir.action')
+        ModelData = pool.get('ir.model.data')
+
+        encoder = PYSONEncoder()
+        line = lines[0]
+
+        if not line.source:
+            raise UserError(
+                gettext('stock_plan.warn_line_without_source'))
+
+        view_id = ModelData.get_id('stock_plan', 'act_stock_plan_line')
+        action = Action(view_id).get_action_value()
+
+        action['name'] = gettext('stock_plan.title_source_relate',
+            source=line.source.rec_name)
+        action['pyson_domain'] = encoder.encode([
+            ('plan', '=', line.plan.id),
+            ('source', '=', line.source.id),
+        ])
         return action
 
     @classmethod

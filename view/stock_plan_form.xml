@@ -9,5 +9,4 @@
         <button name="recalculate"/>
         <link name="stock_plan.act_plan_line_relate" icon="tryton-open"/>
     </group>
-    <field name="lines" colspan="6" height="450"/>
 </form>
