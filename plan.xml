@@ -35,6 +35,11 @@
             <field name="string">Open related destination lines</field>
             <field name="model">stock.plan.line</field>
         </record>
+        <record model="ir.model.button" id="source_relate_button">
+            <field name="name">source_relate</field>
+            <field name="string">Source related destination lines</field>
+            <field name="model">stock.plan.line</field>
+        </record>
 
             <!-- Related Records -->
                 <!-- Lines with the same destination -->
