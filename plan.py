@@ -23,6 +23,12 @@ class StockPlan(ModelSQL, ModelView):
         required=True, ondelete='CASCADE',
         help='The company for which the stock plan is created.')
     lines = fields.One2Many('stock.plan.line', 'plan', 'Lines')
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('computed', 'Computed'),
+        ('active', 'Active'),
+        ('deprecated', 'Deprecated'),
+    ], 'State', required=True)
     # Counts of lines
     correct_lines = fields.Function(
         fields.Integer('Correct Lines'), 'get_lines_count')
@@ -48,6 +54,10 @@ class StockPlan(ModelSQL, ModelView):
     def default_company():
         transaction = Transaction()
         return transaction.context.get('company')
+
+    @staticmethod
+    def default_state():
+        return 'draft'
 
     @classmethod
     def get_lines_count(cls, plans, names):
