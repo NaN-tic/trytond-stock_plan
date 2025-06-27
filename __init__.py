@@ -8,6 +8,7 @@ def register():
     Pool.register(
         plan.StockPlan,
         plan.StockPlanLine,
+        plan.StockMove,
         module='stock_plan', type_='model')
     Pool.register(
         module='stock_plan', type_='wizard')

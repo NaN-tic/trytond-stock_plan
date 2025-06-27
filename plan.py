@@ -2,7 +2,7 @@ from datetime import datetime
 from collections import defaultdict
 
 from trytond.model import ModelSQL, ModelView, fields, Workflow
-from trytond.pool import Pool
+from trytond.pool import Pool, PoolMeta
 from trytond.pyson import Eval, In, Not
 from trytond.transaction import Transaction
 from trytond.exceptions import UserError
@@ -463,3 +463,32 @@ class StockPlanLine(ModelSQL, ModelView):
         query = (
             table.select(table.id, where=(Operator(day_difference, value))))
         return [('id', 'in', query)]
+
+
+class StockMove(metaclass=PoolMeta):
+    __name__ = 'stock.move'
+
+    to_lines = fields.Function(fields.Many2Many('stock.plan.line',
+        None, None, 'Goes To'), 'get_to_lines')
+    from_lines = fields.Function(fields.Many2Many('stock.plan.line',
+        None, None, 'Comes From'), 'get_from_lines')
+
+    def get_to_lines(self, name):
+        pool = Pool()
+        StockPlanLine = pool.get('stock.plan.line')
+
+        return StockPlanLine.search([
+            ('plan.state', '=', 'active'),
+            ('plan.company', '=', self.company.id),
+            ('source', '=', f'stock.move,{self.id}'),
+        ])
+
+    def get_from_lines(self, name):
+        pool = Pool()
+        StockPlanLine = pool.get('stock.plan.line')
+
+        return StockPlanLine.search([
+            ('plan.state', '=', 'active'),
+            ('plan.company', '=', self.company.id),
+            ('destination', '=', self.id),
+        ])
