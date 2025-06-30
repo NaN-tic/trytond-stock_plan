@@ -89,7 +89,7 @@
 
             <!-- Tabs -->
         <record model="ir.action.act_window.domain" id="act_stock_plan_draft_domain">
-            <field name="name">Drafted</field>
+            <field name="name">Draft</field>
             <field name="sequence" eval="10"/>
             <field name="domain" eval="[('state', '=', 'draft')]" pyson="1"/>
             <field name="count" eval="True"/>
