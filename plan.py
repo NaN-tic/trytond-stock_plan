@@ -492,3 +492,46 @@ class StockMove(metaclass=PoolMeta):
             ('plan.company', '=', self.company.id),
             ('destination', '=', self.id),
         ])
+
+
+class StockShipmentMixin():
+    __slots__ = ()
+
+    to_lines = fields.Function(fields.Many2Many('stock.plan.line',
+        None, None, 'Goes To'), 'get_to_lines')
+    from_lines = fields.Function(fields.Many2Many('stock.plan.line',
+        None, None, 'Comes From'), 'get_from_lines')
+
+    def get_to_lines(self, name):
+        return [
+            line
+            for move in self.moves
+            for line in move.to_lines
+        ]
+
+    def get_from_lines(self, name):
+        return [
+            line
+            for move in self.moves
+            for line in move.from_lines
+        ]
+
+
+class StockShipmentIn(StockShipmentMixin, metaclass=PoolMeta):
+    __name__ = 'stock.shipment.in'
+
+
+class StockShipmentInReturn(StockShipmentMixin, metaclass=PoolMeta):
+    __name__ = 'stock.shipment.in.return'
+
+
+class StockShipmentOut(StockShipmentMixin, metaclass=PoolMeta):
+    __name__ = 'stock.shipment.out'
+
+
+class StockShipmentOutReturn(StockShipmentMixin, metaclass=PoolMeta):
+    __name__ = 'stock.shipment.out.return'
+
+
+class StockShipmentInternal(StockShipmentMixin, metaclass=PoolMeta):
+    __name__ = 'stock.shipment.internal'
