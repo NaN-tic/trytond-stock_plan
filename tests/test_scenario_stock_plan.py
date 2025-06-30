@@ -70,7 +70,7 @@ class Test(unittest.TestCase):
         warehouse_location, = StockLocation.find([('code', '=', 'WH')])
 
         # Create stock plan
-        plan = StockPlan(calculate_excess=True)
+        plan = StockPlan(include_excess_stock=True)
 
         def click_do(move):
             try:
@@ -611,7 +611,7 @@ class Test(unittest.TestCase):
         click_do(eggs_warehouse_draft)
         click_do(customer_move)
 
-        # CASE 8: Testing excess stock (with calculate_excess enabled)
+        # CASE 8: Testing excess stock (with include_excess_stock enabled)
         # Incoming Moves: 1 egg
         # Storage: 100g salt
         # Customer: None
@@ -657,12 +657,12 @@ class Test(unittest.TestCase):
         self.assertEqual(salt_line[0].source, warehouse_location)
         self.assertIsNone(salt_line[0].destination)
 
-        # CASE 9: Testing excess stock (with calculate_excess disabled)
+        # CASE 9: Testing excess stock (with include_excess_stock disabled)
         # Incoming Moves: 1 egg
         # Storage: 100g salt
         # Customer: None
 
-        plan.calculate_excess = False
+        plan.include_excess_stock = False
         plan.save()
         plan.click('recalculate')
         plan.reload()

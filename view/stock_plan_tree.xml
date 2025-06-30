@@ -3,9 +3,9 @@
     <field name="state"/>
     <field name="company" optional="0" expand="1"/>
     <field name="total_lines" optional="0"/>
-    <field name="correct_lines" optional="0"/>
+    <field name="valid_lines" optional="0"/>
     <field name="without_stock"/>
     <field name="late_stock"/>
     <field name="excess_stock" optional="0"/>
-    <field name="calculate_excess" optional="0" expand="1"/>
+    <field name="include_excess_stock" optional="0" expand="1"/>
 </tree>

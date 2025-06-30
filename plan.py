@@ -10,24 +10,31 @@ from trytond.i18n import gettext
 from trytond.pyson import PYSONEncoder
 
 
-# TODO: Add helps
 # TODO: Optimize fields.Functions
 class StockPlan(Workflow, ModelSQL, ModelView):
     'Stock Plan'
     __name__ = 'stock.plan'
 
-    calculate_excess = fields.Boolean('Calculate Excess', # TODO: Subject to change: may be a configuration.
-        states={ 'readonly': Not(In(Eval('state'), ['draft', 'active'])) },
-        help=(
-            'If checked, the plan will include all stock from warehouses, '
-            'even if they do not have destination.'))
+    # TODO: Subject to change: may be a configuration.
+    include_excess_stock = fields.Boolean('Include Excess Stock',
+        help='If checked, the plan will include lines for all stock '
+            'without a destination.',
+        states={
+            'readonly': Not(In(Eval('state'), ['draft', 'active']))
+            })
     company = fields.Many2One('company.company', 'Company',
+        help='The company for which the plan is created.',
         required=True, ondelete='CASCADE',
-        states={ 'readonly': Not(In(Eval('state'), ['draft', 'active'])) },
-        help='The company for which the stock plan is created.')
-    last_calculation = fields.DateTime('Last Calculation', readonly=True)
+        states={
+            'readonly': Not(In(Eval('state'), ['draft', 'active']))
+            })
+    computed_at = fields.DateTime('Computed At',
+        help='The last time the plan was calculated.',
+        readonly=True)
     lines = fields.One2Many('stock.plan.line', 'plan', 'Lines',
-        states={ 'readonly': Not(In(Eval('state'), ['draft', 'active'])) })
+        states={
+            'readonly': Not(In(Eval('state'), ['draft', 'active']))
+            })
     state = fields.Selection([
         ('draft', 'Draft'),
         ('active', 'Active'),
@@ -35,18 +42,30 @@ class StockPlan(Workflow, ModelSQL, ModelView):
         ('cancelled', 'Cancelled'),
     ], 'State', required=True, readonly=True)
     # Counts of lines
-    correct_lines = fields.Function(
-        fields.Integer('Correct Lines'), 'get_lines_count')
-    excess_stock = fields.Function(fields.Integer('Excess Stock',
-            states={ 'invisible': ~Eval('calculate_excess', True) }),
+    valid_lines = fields.Function(
+        fields.Integer('Valid Lines',
+            help='Number of lines that have both a source and a destination, '
+                'where the source is not delayed.'),
+        'get_lines_count')
+    excess_stock = fields.Function(
+        fields.Integer('Excess Stock',
+            help='Number of lines without a destination.',
+            states={
+                'invisible': ~Eval('include_excess_stock', True)
+                }),
         'get_lines_count')
     late_stock = fields.Function(
-        fields.Integer('Late Stock'), 'get_lines_count')
+        fields.Integer('Late Stock',
+            help='Number of lines that have both a source and a destination, '
+                'but where the source is delayed.'),
+        'get_lines_count')
     # If you show 'lines' in the view, you will also load the lines, not only the count.
     total_lines = fields.Function(
         fields.Integer('Total Lines'), 'get_lines_count')
     without_stock = fields.Function(
-        fields.Integer('Without Stock'), 'get_lines_count')
+        fields.Integer('Without Stock',
+            help='Number of lines without a source.'),
+        'get_lines_count')
 
     @classmethod
     def __setup__(cls):
@@ -104,7 +123,7 @@ class StockPlan(Workflow, ModelSQL, ModelView):
             for plan in plans:
                 result[name][plan.id] = 0
 
-                if name == 'correct_lines':
+                if name == 'valid_lines':
                     result[name][plan.id] = StockPlanLine.search_count([
                         ('plan', '=', plan.id),
                         ('source', '!=', None),
@@ -149,7 +168,7 @@ class StockPlan(Workflow, ModelSQL, ModelView):
             raise UserError(
                 gettext('stock_plan.msg_active_transition_multiple_plans'))
 
-        error_plans = [plan for plan in plans if not plan.last_calculation]
+        error_plans = [plan for plan in plans if not plan.computed_at]
         if error_plans:
             raise UserError(
                 gettext('stock_plan.msg_plan_without_calculation',
@@ -220,7 +239,7 @@ class StockPlan(Workflow, ModelSQL, ModelView):
 
             if from_warehouse and from_warehouse != to_warehouse:
                 outgoing[from_warehouse].append(move)
-                if not plan.calculate_excess:
+                if not plan.include_excess_stock:
                     needed_products[from_warehouse.id].add(move.product.id)
 
             if to_warehouse and from_warehouse != to_warehouse:
@@ -298,7 +317,7 @@ class StockPlan(Workflow, ModelSQL, ModelView):
                             )))
 
             # EXCESS STOCK: Create for each existing stock at warehouse
-            if plan.calculate_excess:
+            if plan.include_excess_stock:
                 lines.extend([
                     StockPlanLine(plan=plan, quantity=stock_quantity,
                         source=warehouse, product=Product(key[1]))
@@ -307,7 +326,7 @@ class StockPlan(Workflow, ModelSQL, ModelView):
                 ])
 
         # EXCESS STOCK: Create for each existing incomes
-        if plan.calculate_excess:
+        if plan.include_excess_stock:
             lines.extend([
                 StockPlanLine(plan=plan, quantity=income['quantity'],
                     source=income['ref'], product=income['ref'].product,
@@ -318,12 +337,11 @@ class StockPlan(Workflow, ModelSQL, ModelView):
 
         StockPlanLine.save(lines)
         plan.lines = lines
-        plan.last_calculation = datetime.now()
+        plan.computed_at = datetime.now()
         cls.save([plan])
 
 
 # TODO: Set domains?
-# TODO: destination_desc = fields.Function
 class StockPlanLine(ModelSQL, ModelView):
     'Stock Plan Line'
     __name__ = 'stock.plan.line'
@@ -333,7 +351,7 @@ class StockPlanLine(ModelSQL, ModelView):
     destination_document = fields.Function(
         fields.Reference('Destination Document', 'get_document_refs'),
         'get_document')
-    day_difference = fields.Function(fields.Integer('Day Difference'),
+    day_difference = fields.Function(fields.Integer('Days Difference'),
         'get_day_difference', searcher='search_day_difference')
     source = fields.Reference('Source', 'get_source')
     source_date = fields.Date('Source Date', readonly=True)

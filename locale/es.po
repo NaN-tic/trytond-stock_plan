@@ -12,21 +12,37 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.2.2\n"
 
-msgctxt "field:stock.plan,calculate_excess:"
-msgid "Calculate Excess"
-msgstr "Calcular exceso"
+msgctxt "field:production,from_lines:"
+msgid "Comes From"
+msgstr "Procede de"
+
+msgctxt "field:production,to_lines:"
+msgid "Goes To"
+msgstr "Irá hacia"
+
+msgctxt "field:stock.move,from_lines:"
+msgid "Comes From"
+msgstr "Procede de"
+
+msgctxt "field:stock.move,to_lines:"
+msgid "Goes To"
+msgstr "Irá hacia"
 
 msgctxt "field:stock.plan,company:"
 msgid "Company"
 msgstr "Compañía"
 
-msgctxt "field:stock.plan,correct_lines:"
-msgid "Correct Lines"
-msgstr "Líneas correctas"
+msgctxt "field:stock.plan,computed_at:"
+msgid "Computed At"
+msgstr "Calculado el"
 
 msgctxt "field:stock.plan,excess_stock:"
 msgid "Excess Stock"
 msgstr "Exceso de existencias"
+
+msgctxt "field:stock.plan,include_excess_stock:"
+msgid "Include Excess Stock"
+msgstr "Incluir exceso de existencias"
 
 msgctxt "field:stock.plan,late_stock:"
 msgid "Late Stock"
@@ -36,16 +52,24 @@ msgctxt "field:stock.plan,lines:"
 msgid "Lines"
 msgstr "Líneas"
 
+msgctxt "field:stock.plan,state:"
+msgid "State"
+msgstr "Estado"
+
 msgctxt "field:stock.plan,total_lines:"
 msgid "Total Lines"
 msgstr "Líneas totales"
+
+msgctxt "field:stock.plan,valid_lines:"
+msgid "Valid Lines"
+msgstr "Líneas válidas"
 
 msgctxt "field:stock.plan,without_stock:"
 msgid "Without Stock"
 msgstr "Sin existencias"
 
 msgctxt "field:stock.plan.line,day_difference:"
-msgid "Day Difference"
+msgid "Days Difference"
 msgstr "Días de diferencia"
 
 msgctxt "field:stock.plan.line,destination:"
@@ -88,17 +112,84 @@ msgctxt "field:stock.plan.line,uom:"
 msgid "UoM"
 msgstr "UdM"
 
-msgctxt "help:stock.plan,calculate_excess:"
-msgid ""
-"If checked, the plan will include all stock from warehouses, even if they "
-"do not have destination."
-msgstr ""
-"Si se marca, el plan incluirá todas las existencias de los almacenes, "
-"incluso si no tienen destino."
+msgctxt "field:stock.shipment.in,from_lines:"
+msgid "Comes From"
+msgstr "Procede de"
+
+msgctxt "field:stock.shipment.in,to_lines:"
+msgid "Goes To"
+msgstr "Irá hacia"
+
+msgctxt "field:stock.shipment.in.return,from_lines:"
+msgid "Comes From"
+msgstr "Procede de"
+
+msgctxt "field:stock.shipment.in.return,to_lines:"
+msgid "Goes To"
+msgstr "Irá hacia"
+
+msgctxt "field:stock.shipment.internal,from_lines:"
+msgid "Comes From"
+msgstr "Procede de"
+
+msgctxt "field:stock.shipment.internal,to_lines:"
+msgid "Goes To"
+msgstr "Irá hacia"
+
+msgctxt "field:stock.shipment.out,from_lines:"
+msgid "Comes From"
+msgstr "Procede de"
+
+msgctxt "field:stock.shipment.out,to_lines:"
+msgid "Goes To"
+msgstr "Irá hacia"
+
+msgctxt "field:stock.shipment.out.return,from_lines:"
+msgid "Comes From"
+msgstr "Procede de"
+
+msgctxt "field:stock.shipment.out.return,to_lines:"
+msgid "Goes To"
+msgstr "Irá hacia"
 
 msgctxt "help:stock.plan,company:"
-msgid "The company for which the stock plan is created."
-msgstr "La empresa para la que se crea el plan de existencias."
+msgid "The company for which the plan is created."
+msgstr "La empresa para la que se creará el plan."
+
+msgctxt "help:stock.plan,computed_at:"
+msgid "The last time the plan was calculated."
+msgstr "La última vez en que se calculó el plan."
+
+msgctxt "help:stock.plan,excess_stock:"
+msgid "Number of lines without a destination."
+msgstr "Número de líneas sin destino."
+
+msgctxt "help:stock.plan,include_excess_stock:"
+msgid ""
+"If checked, the plan will include lines for all stock without a destination."
+msgstr ""
+"Si se marca esta opción, el plan incluirá líneas para todas las existencias "
+"sin destino."
+
+msgctxt "help:stock.plan,late_stock:"
+msgid ""
+"Number of lines that have both a source and a destination, but where the "
+"source is delayed."
+msgstr ""
+"Número de líneas que tienen tanto una procedencia como un destino, pero "
+"donde la procedencia está retrasado."
+
+msgctxt "help:stock.plan,valid_lines:"
+msgid ""
+"Number of lines that have both a source and a destination, where the source "
+"is not delayed."
+msgstr ""
+"Número de líneas que tienen tanto una procedencia como un destino, donde la "
+"procedencia no está retrasado."
+
+msgctxt "help:stock.plan,without_stock:"
+msgid "Number of lines without a source."
+msgstr "Número de líneas sin procedencia."
 
 msgctxt "help:stock.plan.line,uom:"
 msgid "The Unit of Measure for the quantities."
@@ -139,6 +230,26 @@ msgctxt ""
 msgid "Without Stock"
 msgstr "Sin stock"
 
+msgctxt "model:ir.action.act_window.domain,name:act_stock_plan_active_domain"
+msgid "Active"
+msgstr "Activo"
+
+msgctxt "model:ir.action.act_window.domain,name:act_stock_plan_all_domain"
+msgid "All"
+msgstr "Todo"
+
+msgctxt "model:ir.action.act_window.domain,name:act_stock_plan_draft_domain"
+msgid "Draft"
+msgstr "Borrador"
+
+msgctxt "model:ir.message,text:msg_active_transition_multiple_plans"
+msgid "You cannot activate more than one plan at a time."
+msgstr "No puedes activar más de un plan a la vez."
+
+msgctxt "model:ir.message,text:msg_plan_without_calculation"
+msgid "The plans \"$(plan)\" have not been computed yet."
+msgstr "Los planes \"$(plan)\" aún no se han calculado."
+
 msgctxt "model:ir.message,text:title_destination_relate"
 msgid "Lines with destination \"$(destination)\""
 msgstr "Líneas con destino \"$(destination)\""
@@ -163,9 +274,25 @@ msgstr ""
 "Intentó abrir líneas de procedencia relacionadas, pero la línea actual no "
 "tiene una procedencia."
 
+msgctxt "model:ir.model.button,string:activate_button"
+msgid "Activate"
+msgstr "Activar"
+
+msgctxt "model:ir.model.button,string:cancel_button"
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgctxt "model:ir.model.button,string:deprecate_button"
+msgid "Deprecate"
+msgstr "Discontinuar"
+
 msgctxt "model:ir.model.button,string:destination_relate_button"
 msgid "Open related destination lines"
 msgstr "Abrir líneas de destino relacionadas"
+
+msgctxt "model:ir.model.button,string:draft_button"
+msgid "Draft"
+msgstr "Borrador"
 
 msgctxt "model:ir.model.button,string:recalculate_button"
 msgid "Recalculate"
@@ -190,3 +317,47 @@ msgstr "Plan de existencias"
 msgctxt "model:stock.plan.line,name:"
 msgid "Stock Plan Line"
 msgstr "Línea del plan de existencias"
+
+msgctxt "selection:stock.plan,state:"
+msgid "Active"
+msgstr "Activo"
+
+msgctxt "selection:stock.plan,state:"
+msgid "Cancelled"
+msgstr "Cancelado"
+
+msgctxt "selection:stock.plan,state:"
+msgid "Deprecated"
+msgstr "Obsoleto"
+
+msgctxt "selection:stock.plan,state:"
+msgid "Draft"
+msgstr "Borrador"
+
+msgctxt "view:production:"
+msgid "Planning"
+msgstr "Planificación"
+
+msgctxt "view:stock.move:"
+msgid "Planning"
+msgstr "Planificación"
+
+msgctxt "view:stock.shipment.in.return:"
+msgid "Planning"
+msgstr "Planificación"
+
+msgctxt "view:stock.shipment.in:"
+msgid "Planning"
+msgstr "Planificación"
+
+msgctxt "view:stock.shipment.internal:"
+msgid "Planning"
+msgstr "Planificación"
+
+msgctxt "view:stock.shipment.out.return:"
+msgid "Planning"
+msgstr "Planificación"
+
+msgctxt "view:stock.shipment.out:"
+msgid "Planning"
+msgstr "Planificación"
