@@ -3,9 +3,9 @@
 # the full copyright notices and license terms.
 from trytond.pool import Pool
 from . import plan
-from .plan import StockShipmentMixin
+from .plan import StockMixin, StockShipmentMixin
 
-__all__ = ['StockShipmentMixin', 'register']
+__all__ = ['StockMixin', 'StockShipmentMixin', 'register']
 
 
 def register():
@@ -23,3 +23,7 @@ def register():
         module='stock_plan', type_='wizard')
     Pool.register(
         module='stock_plan', type_='report')
+    Pool.register(
+        plan.Production,
+        depends=['production'],
+        module='stock_plan', type_='model')

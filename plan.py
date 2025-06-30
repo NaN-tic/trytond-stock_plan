@@ -465,13 +465,35 @@ class StockPlanLine(ModelSQL, ModelView):
         return [('id', 'in', query)]
 
 
-class StockMove(metaclass=PoolMeta):
-    __name__ = 'stock.move'
+class StockMixin():
+    __slots__ = ()
 
     to_lines = fields.Function(fields.Many2Many('stock.plan.line',
         None, None, 'Goes To'), 'get_to_lines')
     from_lines = fields.Function(fields.Many2Many('stock.plan.line',
         None, None, 'Comes From'), 'get_from_lines')
+
+
+class Production(StockMixin, metaclass=PoolMeta):
+    __name__ = 'production'
+
+    def get_to_lines(self, name):
+        return [
+            line
+            for input in self.inputs
+            for line in input.to_lines
+        ]
+
+    def get_from_lines(self, name):
+        return [
+            line
+            for output in self.outputs
+            for line in output.from_lines
+        ]
+
+
+class StockMove(StockMixin, metaclass=PoolMeta):
+    __name__ = 'stock.move'
 
     def get_to_lines(self, name):
         pool = Pool()
@@ -494,13 +516,8 @@ class StockMove(metaclass=PoolMeta):
         ])
 
 
-class StockShipmentMixin():
+class StockShipmentMixin(StockMixin):
     __slots__ = ()
-
-    to_lines = fields.Function(fields.Many2Many('stock.plan.line',
-        None, None, 'Goes To'), 'get_to_lines')
-    from_lines = fields.Function(fields.Many2Many('stock.plan.line',
-        None, None, 'Comes From'), 'get_from_lines')
 
     def get_to_lines(self, name):
         return [
