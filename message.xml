@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!-- This file is part of Tryton. The COPYRIGHT file at the top level of
+this repository contains the full copyright notices and license terms. -->
+<tryton>
+    <data grouped="1">
+        <record model="ir.message" id="msg_warn_line_without_destination">
+            <field name="text">You tried to open related destination lines, but the current line does not have a destination.</field>
+        </record>
+        <record model="ir.message" id="msg_warn_line_without_source">
+            <field name="text">You tried to open related source lines, but the current line does not have a source.</field>
+        </record>
+        <record model="ir.message" id="msg_title_destination_relate">
+            <field name="text">Lines with destination "$(destination)"</field>
+        </record>
+        <record model="ir.message" id="msg_title_source_relate">
+            <field name="text">Lines with source "$(source)"</field>
+        </record>
+        <record model="ir.message" id="msg_plan_without_calculation">
+            <field name="text">The plans "$(plan)" have not been computed yet.</field>
+        </record>
+        <record model="ir.message" id="msg_active_transition_multiple_plans">
+            <field name="text">You cannot activate more than one plan at a time.</field>
+        </record>
+    </data>
+</tryton>
