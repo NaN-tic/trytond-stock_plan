@@ -9,7 +9,7 @@
         <label name="computed_at"/>
         <field name="computed_at" xexpand="0" widget="date"/>
         <field name="computed_at" xexpand="0" widget="time"/>
-        <button name="recalculate" xexpand="1"/>
+        <button name="calculate" xexpand="1"/>
     </group>
     <group id="state-info" colspan="6" col="-1">
         <label name="state"/>

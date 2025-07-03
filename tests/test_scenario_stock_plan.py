@@ -102,7 +102,7 @@ class Test(unittest.TestCase):
             unit_price=Decimal('1.00'),)
         customer_move.save()
 
-        plan.click('recalculate')
+        plan.click('calculate')
         plan.reload()
 
         self.assertEqual(len(plan.lines), 1)
@@ -137,7 +137,7 @@ class Test(unittest.TestCase):
             unit_price=Decimal('1.00'),)
         customer_move.save()
 
-        plan.click('recalculate')
+        plan.click('calculate')
         plan.reload()
 
         self.assertEqual(len(plan.lines), 1)
@@ -211,7 +211,7 @@ class Test(unittest.TestCase):
             unit_price=Decimal('0.40'),)
         customer_move_salt.save()
 
-        plan.click('recalculate')
+        plan.click('calculate')
         plan.reload()
 
         self.assertEqual(len(plan.lines), 4)
@@ -323,7 +323,7 @@ class Test(unittest.TestCase):
             unit_price=Decimal('0.40'),)
         customer_move_salt.save()
 
-        plan.click('recalculate')
+        plan.click('calculate')
         plan.reload()
 
         self.assertEqual(len(plan.lines), 8)
@@ -429,7 +429,7 @@ class Test(unittest.TestCase):
             unit_price=Decimal('1.00'),)
         customer_move.save()
 
-        plan.click('recalculate')
+        plan.click('calculate')
         plan.reload()
 
         self.assertEqual(len(plan.lines), 1)
@@ -481,7 +481,7 @@ class Test(unittest.TestCase):
         customer_move.planned_date = None
         customer_move.save()
 
-        plan.click('recalculate')
+        plan.click('calculate')
         plan.reload()
 
         late_date_check(plan.lines)
@@ -496,7 +496,7 @@ class Test(unittest.TestCase):
         customer_move.planned_date = today
         customer_move.save()
 
-        plan.click('recalculate')
+        plan.click('calculate')
         plan.reload()
 
         late_date_check(plan.lines)
@@ -511,7 +511,7 @@ class Test(unittest.TestCase):
         customer_move.planned_date = today
         customer_move.save()
 
-        plan.click('recalculate')
+        plan.click('calculate')
         plan.reload()
 
         late_date_check(plan.lines)
@@ -526,7 +526,7 @@ class Test(unittest.TestCase):
         customer_move.planned_date = None
         customer_move.save()
 
-        plan.click('recalculate')
+        plan.click('calculate')
         plan.reload()
 
         late_date_check(plan.lines)
@@ -541,7 +541,7 @@ class Test(unittest.TestCase):
         customer_move.planned_date = None
         customer_move.save()
 
-        plan.click('recalculate')
+        plan.click('calculate')
         plan.reload()
 
         late_date_check(plan.lines)
@@ -585,7 +585,7 @@ class Test(unittest.TestCase):
             unit_price=Decimal('1.00'),)
         customer_move.save()
 
-        plan.click('recalculate')
+        plan.click('calculate')
         plan.reload()
         self.assertEqual(len(plan.lines), 2)
 
@@ -634,7 +634,7 @@ class Test(unittest.TestCase):
         salt_storage.save()
         click_do(salt_storage)
 
-        plan.click('recalculate')
+        plan.click('calculate')
         plan.reload()
 
         self.assertEqual(len(plan.lines), 2)
@@ -664,7 +664,7 @@ class Test(unittest.TestCase):
 
         plan.include_excess_stock = False
         plan.save()
-        plan.click('recalculate')
+        plan.click('calculate')
         plan.reload()
 
         self.assertEqual(len(plan.lines), 0)

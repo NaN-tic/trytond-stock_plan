@@ -10,12 +10,10 @@ from trytond.i18n import gettext
 from trytond.pyson import PYSONEncoder
 
 
-# TODO: Optimize fields.Functions
 class StockPlan(Workflow, ModelSQL, ModelView):
     'Stock Plan'
     __name__ = 'stock.plan'
 
-    # TODO: Subject to change: may be a configuration.
     include_excess_stock = fields.Boolean('Include Excess Stock',
         help='If checked, the plan will include lines for all stock '
             'without a destination.',
@@ -41,7 +39,6 @@ class StockPlan(Workflow, ModelSQL, ModelView):
         ('deprecated', 'Deprecated'),
         ('cancelled', 'Cancelled'),
     ], 'State', required=True, readonly=True)
-    # Counts of lines
     valid_lines = fields.Function(
         fields.Integer('Valid Lines',
             help='Number of lines that have both a source and a destination, '
@@ -59,7 +56,6 @@ class StockPlan(Workflow, ModelSQL, ModelView):
             help='Number of lines that have both a source and a destination, '
                 'but where the source is delayed.'),
         'get_lines_count')
-    # If you show 'lines' in the view, you will also load the lines, not only the count.
     total_lines = fields.Function(
         fields.Integer('Total Lines'), 'get_lines_count')
     without_stock = fields.Function(
@@ -97,7 +93,7 @@ class StockPlan(Workflow, ModelSQL, ModelView):
                 'invisible': Eval('state') != 'cancelled',
                 'depends': ['state'],
             },
-            'recalculate': {
+            'calculate': {
                 'icon': 'tryton-refresh',
                 'invisible': Eval('state') != 'draft',
             },
@@ -197,12 +193,12 @@ class StockPlan(Workflow, ModelSQL, ModelView):
 
     @classmethod
     @ModelView.button
-    def recalculate(cls, plans):
+    def calculate(cls, plans):
         for plan in plans:
-            cls._recalculate(plan)
+            cls._calculate(plan)
 
     @classmethod
-    def _recalculate(cls, plan):
+    def _calculate(cls, plan):
         pool = Pool()
         Date = pool.get('ir.date')
         Product = pool.get('product.product')
@@ -341,7 +337,6 @@ class StockPlan(Workflow, ModelSQL, ModelView):
         cls.save([plan])
 
 
-# TODO: Set domains?
 class StockPlanLine(ModelSQL, ModelView):
     'Stock Plan Line'
     __name__ = 'stock.plan.line'
@@ -431,12 +426,12 @@ class StockPlanLine(ModelSQL, ModelView):
 
         if not line.destination:
             raise UserError(
-                gettext('stock_plan.warn_line_without_destination'))
+                gettext('stock_plan.msg_warn_line_without_destination'))
 
         view_id = ModelData.get_id('stock_plan', 'act_stock_plan_line')
         action = Action(view_id).get_action_value()
 
-        action['name'] = gettext('stock_plan.title_destination_relate',
+        action['name'] = gettext('stock_plan.msg_title_destination_relate',
             destination=line.destination.rec_name)
         action['pyson_domain'] = encoder.encode([
             ('plan', '=', line.plan.id),
@@ -456,12 +451,12 @@ class StockPlanLine(ModelSQL, ModelView):
 
         if not line.source:
             raise UserError(
-                gettext('stock_plan.warn_line_without_source'))
+                gettext('stock_plan.msg_warn_line_without_source'))
 
         view_id = ModelData.get_id('stock_plan', 'act_stock_plan_line')
         action = Action(view_id).get_action_value()
 
-        action['name'] = gettext('stock_plan.title_source_relate',
+        action['name'] = gettext('stock_plan.msg_title_source_relate',
             source=line.source.rec_name)
         action['pyson_domain'] = encoder.encode([
             ('plan', '=', line.plan.id),
@@ -499,14 +494,14 @@ class Production(StockMixin, metaclass=PoolMeta):
         return [
             line
             for input in self.inputs
-            for line in input.to_lines
+            for line in input.from_lines
         ]
 
     def get_from_lines(self, name):
         return [
             line
             for output in self.outputs
-            for line in output.from_lines
+            for line in output.to_lines
         ]
 
 

@@ -54,6 +54,14 @@
             <field name="model">stock.plan</field>
             <field name="group" ref="stock.group_stock"/>
             <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_delete" eval="False"/>
+        </record>
+        <record model="ir.model.access" id="access_stock_plan_group_stock_admin">
+            <field name="model">stock.plan</field>
+            <field name="group" ref="stock.group_stock_admin"/>
+            <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
             <field name="perm_create" eval="True"/>
             <field name="perm_delete" eval="True"/>
@@ -110,9 +118,9 @@
         </record>
 
             <!-- Buttons -->
-        <record model="ir.model.button" id="recalculate_button">
-            <field name="name">recalculate</field>
-            <field name="string">Recalculate</field>
+        <record model="ir.model.button" id="calculate_button">
+            <field name="name">calculate</field>
+            <field name="string">Calculate</field>
             <field name="model">stock.plan</field>
         </record>
         <record model="ir.model.button" id="activate_button">

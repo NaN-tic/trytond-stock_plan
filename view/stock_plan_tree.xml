@@ -1,5 +1,5 @@
 <tree>
-    <button name="recalculate"/>
+    <button name="calculate"/>
     <field name="state"/>
     <field name="company" optional="0" expand="1"/>
     <field name="total_lines" optional="0"/>
