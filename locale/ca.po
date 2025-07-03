@@ -1,0 +1,362 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Ismael Marcos Martínez <ismael.marcos@nan-tic.com>\n"
+"Language-Team: \n"
+"Language: ca\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.2.2\n"
+
+msgctxt "field:production,from_lines:"
+msgid "Comes From"
+msgstr "Prové de"
+
+msgctxt "field:production,to_lines:"
+msgid "Goes To"
+msgstr "Anirà cap a"
+
+msgctxt "field:stock.move,from_lines:"
+msgid "Comes From"
+msgstr "Prové de"
+
+msgctxt "field:stock.move,to_lines:"
+msgid "Goes To"
+msgstr "Anirà cap a"
+
+msgctxt "field:stock.plan,company:"
+msgid "Company"
+msgstr "Empresa"
+
+msgctxt "field:stock.plan,computed_at:"
+msgid "Computed At"
+msgstr "Calculat el"
+
+msgctxt "field:stock.plan,excess_stock:"
+msgid "Excess Stock"
+msgstr "Excés d'estoc"
+
+msgctxt "field:stock.plan,include_excess_stock:"
+msgid "Include Excess Stock"
+msgstr "Inclou l'excés d'estoc"
+
+msgctxt "field:stock.plan,late_stock:"
+msgid "Late Stock"
+msgstr "Estoc tardà"
+
+msgctxt "field:stock.plan,lines:"
+msgid "Lines"
+msgstr "Línies"
+
+msgctxt "field:stock.plan,state:"
+msgid "State"
+msgstr "Estat"
+
+msgctxt "field:stock.plan,total_lines:"
+msgid "Total Lines"
+msgstr "Línies totals"
+
+msgctxt "field:stock.plan,valid_lines:"
+msgid "Valid Lines"
+msgstr "Línies vàlides"
+
+msgctxt "field:stock.plan,without_stock:"
+msgid "Without Stock"
+msgstr "Sense estoc"
+
+msgctxt "field:stock.plan.line,day_difference:"
+msgid "Days Difference"
+msgstr "Dies de diferència"
+
+msgctxt "field:stock.plan.line,destination:"
+msgid "Destination Move"
+msgstr "Moviment de destinació"
+
+msgctxt "field:stock.plan.line,destination_date:"
+msgid "Destination Date"
+msgstr "Data de destinació"
+
+msgctxt "field:stock.plan.line,destination_document:"
+msgid "Destination Document"
+msgstr "Document de destinació"
+
+msgctxt "field:stock.plan.line,plan:"
+msgid "Stock Plan"
+msgstr "Pla d'estoc"
+
+msgctxt "field:stock.plan.line,product:"
+msgid "Product"
+msgstr "Producte"
+
+msgctxt "field:stock.plan.line,quantity:"
+msgid "Quantity"
+msgstr "Quantitat"
+
+msgctxt "field:stock.plan.line,source:"
+msgid "Source"
+msgstr "Procedència"
+
+msgctxt "field:stock.plan.line,source_date:"
+msgid "Source Date"
+msgstr "Data de procedència"
+
+msgctxt "field:stock.plan.line,source_document:"
+msgid "Source Document"
+msgstr "Document de procedència"
+
+msgctxt "field:stock.plan.line,uom:"
+msgid "UoM"
+msgstr "UdM"
+
+msgctxt "field:stock.shipment.in,from_lines:"
+msgid "Comes From"
+msgstr "Prové de"
+
+msgctxt "field:stock.shipment.in,to_lines:"
+msgid "Goes To"
+msgstr "Anirà cap a"
+
+msgctxt "field:stock.shipment.in.return,from_lines:"
+msgid "Comes From"
+msgstr "Prové de"
+
+msgctxt "field:stock.shipment.in.return,to_lines:"
+msgid "Goes To"
+msgstr "Anirà cap a"
+
+msgctxt "field:stock.shipment.internal,from_lines:"
+msgid "Comes From"
+msgstr "Prové de"
+
+msgctxt "field:stock.shipment.internal,to_lines:"
+msgid "Goes To"
+msgstr "Anirà cap a"
+
+msgctxt "field:stock.shipment.out,from_lines:"
+msgid "Comes From"
+msgstr "Prové de"
+
+msgctxt "field:stock.shipment.out,to_lines:"
+msgid "Goes To"
+msgstr "Anirà cap a"
+
+msgctxt "field:stock.shipment.out.return,from_lines:"
+msgid "Comes From"
+msgstr "Prové de"
+
+msgctxt "field:stock.shipment.out.return,to_lines:"
+msgid "Goes To"
+msgstr "Anirà cap a"
+
+msgctxt "help:stock.plan,company:"
+msgid "The company for which the plan is created."
+msgstr "L'empresa per a la qual es crea el pla."
+
+msgctxt "help:stock.plan,computed_at:"
+msgid "The last time the plan was calculated."
+msgstr "L'última vegada que es va calcular el pla."
+
+msgctxt "help:stock.plan,excess_stock:"
+msgid "Number of lines without a destination."
+msgstr "Quantitat de línies sense destinació."
+
+msgctxt "help:stock.plan,include_excess_stock:"
+msgid ""
+"If checked, the plan will include lines for all stock without a destination."
+msgstr ""
+"Si està marcat, el pla inclourà línies per a tot l'estoc sense destinació."
+
+msgctxt "help:stock.plan,late_stock:"
+msgid ""
+"Number of lines that have both a source and a destination, but where the "
+"source is delayed."
+msgstr ""
+"Quantitat de línies que tenen tant una procedència com una destinació, però "
+"on la procedència té retard."
+
+msgctxt "help:stock.plan,valid_lines:"
+msgid ""
+"Number of lines that have both a source and a destination, where the source "
+"is not delayed."
+msgstr ""
+"Nombre de línies que tenen tant una procedència com una destinació, on la "
+"procedència no pateix retard."
+
+msgctxt "help:stock.plan,without_stock:"
+msgid "Number of lines without a source."
+msgstr "Nombre de línies sense procedència."
+
+msgctxt "help:stock.plan.line,uom:"
+msgid "The Unit of Measure for the quantities."
+msgstr "La unitat de mesura per a les quantitats."
+
+msgctxt "model:ir.action,name:act_plan_line_relate"
+msgid "Plan Lines"
+msgstr "Línies del pla"
+
+msgctxt "model:ir.action,name:act_stock_plan"
+msgid "Stock Plan"
+msgstr "Pla d'estoc"
+
+msgctxt "model:ir.action,name:act_stock_plan_line"
+msgid "Stock Plan Line"
+msgstr "Línia del pla d'estocs"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_plan_line_relate_domain_all"
+msgid "All"
+msgstr "Tot"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:"
+"act_plan_line_relate_domain_late_stock"
+msgid "Late Stock"
+msgstr "Estoc tardà"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:"
+"act_plan_line_relate_domain_surplus_stock"
+msgid "Excess Stock"
+msgstr "Excés d'estoc"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:"
+"act_plan_line_relate_domain_without_stock"
+msgid "Without Stock"
+msgstr "Sense estoc"
+
+msgctxt "model:ir.action.act_window.domain,name:act_stock_plan_active_domain"
+msgid "Active"
+msgstr "Actiu"
+
+msgctxt "model:ir.action.act_window.domain,name:act_stock_plan_all_domain"
+msgid "All"
+msgstr "Tot"
+
+msgctxt "model:ir.action.act_window.domain,name:act_stock_plan_draft_domain"
+msgid "Draft"
+msgstr "Esborrany"
+
+msgctxt "model:ir.message,text:msg_active_transition_multiple_plans"
+msgid "You cannot activate more than one plan at a time."
+msgstr "No podeu activar més d'un pla alhora."
+
+msgctxt "model:ir.message,text:msg_plan_without_calculation"
+msgid "The plans \"$(plan)\" have not been computed yet."
+msgstr "Els plans \"$(plan)\" encara no s'han calculat."
+
+msgctxt "model:ir.message,text:msg_title_destination_relate"
+msgid "Lines with destination \"$(destination)\""
+msgstr "Línies amb destinació \"$(destination)\""
+
+msgctxt "model:ir.message,text:msg_title_source_relate"
+msgid "Lines with source \"$(source)\""
+msgstr "Línies amb la procedència \"$(source)\""
+
+msgctxt "model:ir.message,text:msg_warn_line_without_destination"
+msgid ""
+"You tried to open related destination lines, but the current line does not "
+"have a destination."
+msgstr ""
+"Heu intentat obrir línies amb destinació relacionades, però la línia actual "
+"no té cap destinació."
+
+msgctxt "model:ir.message,text:msg_warn_line_without_source"
+msgid ""
+"You tried to open related source lines, but the current line does not have "
+"a source."
+msgstr ""
+"Has intentat obrir línies amb procedència relacionades, però la línia "
+"actual no té cap procedència."
+
+msgctxt "model:ir.model.button,string:activate_button"
+msgid "Activate"
+msgstr "Activa"
+
+msgctxt "model:ir.model.button,string:cancel_button"
+msgid "Cancel"
+msgstr "Cancel·la"
+
+msgctxt "model:ir.model.button,string:deprecate_button"
+msgid "Deprecate"
+msgstr "Discontinuar"
+
+msgctxt "model:ir.model.button,string:destination_relate_button"
+msgid "Open related destination lines"
+msgstr "Obre les línies de destinació relacionades"
+
+msgctxt "model:ir.model.button,string:draft_button"
+msgid "Draft"
+msgstr "Esborrany"
+
+msgctxt "model:ir.model.button,string:calculate_button"
+msgid "Calculate"
+msgstr "Calcula"
+
+msgctxt "model:ir.model.button,string:source_relate_button"
+msgid "Open related source lines"
+msgstr "Obre les línies de procedència relacionades"
+
+msgctxt "model:ir.rule.group,name:rule_group_stock_plan"
+msgid "Stock Plan Rules"
+msgstr "Normes del pla d'estocs"
+
+msgctxt "model:ir.ui.menu,name:menu_stock_plan"
+msgid "Stock Plan"
+msgstr "Pla d'estoc"
+
+msgctxt "model:stock.plan,name:"
+msgid "Stock Plan"
+msgstr "Pla d'estoc"
+
+msgctxt "model:stock.plan.line,name:"
+msgid "Stock Plan Line"
+msgstr "Línia del pla d'estoc"
+
+msgctxt "selection:stock.plan,state:"
+msgid "Active"
+msgstr "Actiu"
+
+msgctxt "selection:stock.plan,state:"
+msgid "Cancelled"
+msgstr "Cancel·lat"
+
+msgctxt "selection:stock.plan,state:"
+msgid "Deprecated"
+msgstr "Obsolet"
+
+msgctxt "selection:stock.plan,state:"
+msgid "Draft"
+msgstr "Esborrany"
+
+msgctxt "view:production:"
+msgid "Planning"
+msgstr "Planificació"
+
+msgctxt "view:stock.move:"
+msgid "Planning"
+msgstr "Planificació"
+
+msgctxt "view:stock.shipment.in.return:"
+msgid "Planning"
+msgstr "Planificació"
+
+msgctxt "view:stock.shipment.in:"
+msgid "Planning"
+msgstr "Planificació"
+
+msgctxt "view:stock.shipment.internal:"
+msgid "Planning"
+msgstr "Planificació"
+
+msgctxt "view:stock.shipment.out.return:"
+msgid "Planning"
+msgstr "Planificació"
+
+msgctxt "view:stock.shipment.out:"
+msgid "Planning"
+msgstr "Planificació"
