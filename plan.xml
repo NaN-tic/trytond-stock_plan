@@ -1,0 +1,263 @@
+<tryton>
+    <data>
+        <!-- stock.plan.line -->
+            <!-- Views -->
+        <record model="ir.ui.view" id="view_stock_plan_line_form">
+            <field name="model">stock.plan.line</field>
+            <field name="type">form</field>
+            <field name="name">stock_plan_line_form</field>
+        </record>
+        <record model="ir.ui.view" id="view_stock_plan_line_tree">
+            <field name="model">stock.plan.line</field>
+            <field name="type">tree</field>
+            <field name="name">stock_plan_line_tree</field>
+        </record>
+
+            <!-- Actions -->
+        <record model="ir.action.act_window" id="act_stock_plan_line">
+            <field name="name">Stock Plan Line</field>
+            <field name="res_model">stock.plan.line</field>
+        </record>
+        <record model="ir.action.act_window.view" id="act_stock_plan_line_form">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="view_stock_plan_line_form"/>
+            <field name="act_window" ref="act_stock_plan_line" />
+        </record>
+        <record model="ir.action.act_window.view" id="act_stock_plan_line_list">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="view_stock_plan_line_tree"/>
+            <field name="act_window" ref="act_stock_plan_line" />
+        </record>
+
+            <!-- Buttons -->
+        <record model="ir.model.button" id="destination_relate_button">
+            <field name="name">destination_relate</field>
+            <field name="string">Open related destination lines</field>
+            <field name="model">stock.plan.line</field>
+        </record>
+        <record model="ir.model.button" id="source_relate_button">
+            <field name="name">source_relate</field>
+            <field name="string">Open related source lines</field>
+            <field name="model">stock.plan.line</field>
+        </record>
+
+        <!-- stock.plan -->
+            <!-- Access -->
+        <record model="ir.model.access" id="access_stock_plan">
+            <field name="model">stock.plan</field>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_delete" eval="False"/>
+        </record>
+        <record model="ir.model.access" id="access_stock_plan_group_stock">
+            <field name="model">stock.plan</field>
+            <field name="group" ref="stock.group_stock"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_delete" eval="False"/>
+        </record>
+        <record model="ir.model.access" id="access_stock_plan_group_stock_admin">
+            <field name="model">stock.plan</field>
+            <field name="group" ref="stock.group_stock_admin"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_delete" eval="True"/>
+        </record>
+
+            <!-- Views -->
+        <record model="ir.ui.view" id="view_stock_plan_form">
+            <field name="model">stock.plan</field>
+            <field name="type">form</field>
+            <field name="name">stock_plan_form</field>
+        </record>
+        <record model="ir.ui.view" id="view_stock_plan_tree">
+            <field name="model">stock.plan</field>
+            <field name="type">tree</field>
+            <field name="name">stock_plan_tree</field>
+        </record>
+
+            <!-- Actions -->
+        <record model="ir.action.act_window" id="act_stock_plan">
+            <field name="name">Stock Plan</field>
+            <field name="res_model">stock.plan</field>
+        </record>
+        <record model="ir.action.act_window.view" id="act_stock_plan_form">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="view_stock_plan_form"/>
+            <field name="act_window" ref="act_stock_plan" />
+        </record>
+        <record model="ir.action.act_window.view" id="act_stock_plan_tree">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="view_stock_plan_tree"/>
+            <field name="act_window" ref="act_stock_plan" />
+        </record>
+
+            <!-- Tabs -->
+        <record model="ir.action.act_window.domain" id="act_stock_plan_draft_domain">
+            <field name="name">Draft</field>
+            <field name="sequence" eval="10"/>
+            <field name="domain" eval="[('state', '=', 'draft')]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_stock_plan"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_stock_plan_active_domain">
+            <field name="name">Active</field>
+            <field name="sequence" eval="10"/>
+            <field name="domain" eval="[('state', '=', 'active')]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_stock_plan"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_stock_plan_all_domain">
+            <field name="name">All</field>
+            <field name="sequence" eval="10"/>
+            <field name="domain" eval="[]" pyson="1"/>
+            <field name="act_window" ref="act_stock_plan"/>
+        </record>
+
+            <!-- Buttons -->
+        <record model="ir.model.button" id="calculate_button">
+            <field name="name">calculate</field>
+            <field name="string">Calculate</field>
+            <field name="model">stock.plan</field>
+        </record>
+        <record model="ir.model.button" id="activate_button">
+            <field name="name">activate</field>
+            <field name="string">Activate</field>
+            <field name="model">stock.plan</field>
+        </record>
+        <record model="ir.model.button" id="cancel_button">
+            <field name="name">cancel</field>
+            <field name="string">Cancel</field>
+            <field name="model">stock.plan</field>
+        </record>
+        <record model="ir.model.button" id="deprecate_button">
+            <field name="name">deprecate</field>
+            <field name="string">Deprecate</field>
+            <field name="model">stock.plan</field>
+        </record>
+        <record model="ir.model.button" id="draft_button">
+            <field name="name">draft</field>
+            <field name="string">Draft</field>
+            <field name="model">stock.plan</field>
+        </record>
+
+            <!-- Menu -->
+        <menuitem id="menu_stock_plan" name="Stock Plan" parent="stock.menu_stock" sequence="30" icon="tryton-list" action="act_stock_plan" />
+
+            <!-- Rules -->
+        <record model="ir.rule.group" id="rule_group_stock_plan">
+            <field name="name">Stock Plan Rules</field>
+            <field name="model">stock.plan</field>
+            <field name="global_p" eval="True"/>
+        </record>
+        <record model="ir.rule" id="rule_stock_plan_company">
+            <field name="domain" eval="[('company', 'in', Eval('companies', []))]" pyson="1"/>
+            <field name="rule_group" ref="rule_group_stock_plan"/>
+        </record>
+
+            <!-- Related Records -->
+        <record model="ir.action.act_window" id="act_plan_line_relate">
+            <field name="name">Plan Lines</field>
+            <field name="res_model">stock.plan.line</field>
+            <field name="domain" eval="[('plan', 'in', Eval('active_ids'))]" pyson="1"/>
+        </record>
+
+        <record model="ir.action.act_window.domain" id="act_plan_line_relate_domain_without_stock">
+            <field name="name">Without Stock</field>
+            <field name="sequence" eval="10"/>
+            <field name="domain" eval="[('source', '=', None), ('source_date', '=', None), ('day_difference', '=', None)]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_plan_line_relate"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_plan_line_relate_domain_late_stock">
+            <field name="name">Late Stock</field>
+            <field name="sequence" eval="20"/>
+            <field name="domain" eval="[('source', 'like', 'stock.move,%'), ('destination', '!=', None), ['OR', ('day_difference', '&lt;', 0), ('day_difference', '=', None)]]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_plan_line_relate"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_plan_line_relate_domain_surplus_stock">
+            <field name="name">Excess Stock</field>
+            <field name="sequence" eval="30"/>
+            <field name="domain" eval="[('destination', '=', None), ('destination_date', '=', None), ('day_difference', '=', None)]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_plan_line_relate"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_plan_line_relate_domain_all">
+            <field name="name">All</field>
+            <field name="sequence" eval="9999"/>
+            <field name="domain" eval="[]" pyson="1"/>
+            <field name="count" eval="False"/>
+            <field name="act_window" ref="act_plan_line_relate"/>
+        </record>
+
+        <record model="ir.action.act_window.view" id="act_plan_line_relate_view_tree">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="view_stock_plan_line_tree"/>
+            <field name="act_window" ref="act_plan_line_relate"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_plan_line_relate_view_form">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="view_stock_plan_line_form"/>
+            <field name="act_window" ref="act_plan_line_relate"/>
+        </record>
+        <record model="ir.action.keyword" id="act_plan_line_relate_keyword">
+            <field name="keyword">form_relate</field>
+            <field name="model">stock.plan,-1</field>
+            <field name="action" ref="act_plan_line_relate"/>
+        </record>
+
+        <!-- Stock Move -->
+        <record model="ir.ui.view" id="move_view_form">
+            <field name="model">stock.move</field>
+            <field name="inherit" ref="stock.move_view_form"/>
+            <field name="name">stock_plan_form_embedded</field>
+        </record>
+
+        <!-- Stock Shipment In -->
+        <record model="ir.ui.view" id="shipment_in_view_form">
+            <field name="model">stock.shipment.in</field>
+            <field name="inherit" ref="stock.shipment_in_view_form"/>
+            <field name="name">stock_plan_form_embedded</field>
+        </record>
+
+        <!-- Stock Shipment In Return -->
+        <record model="ir.ui.view" id="shipment_in_return_view_form">
+            <field name="model">stock.shipment.in.return</field>
+            <field name="inherit" ref="stock.shipment_in_return_view_form"/>
+            <field name="name">stock_plan_form_embedded</field>
+        </record>
+
+        <!-- Stock Shipment Out -->
+        <record model="ir.ui.view" id="shipment_out_view_form">
+            <field name="model">stock.shipment.out</field>
+            <field name="inherit" ref="stock.shipment_out_view_form"/>
+            <field name="name">stock_plan_form_embedded</field>
+        </record>
+
+        <!-- Stock Shipment Out Return -->
+        <record model="ir.ui.view" id="shipment_out_return_view_form">
+            <field name="model">stock.shipment.out.return</field>
+            <field name="inherit" ref="stock.shipment_out_return_view_form"/>
+            <field name="name">stock_plan_form_embedded</field>
+        </record>
+
+        <!-- Stock Shipment Out Return -->
+        <record model="ir.ui.view" id="shipment_internal_view_form">
+            <field name="model">stock.shipment.internal</field>
+            <field name="inherit" ref="stock.shipment_internal_view_form"/>
+            <field name="name">stock_plan_form_embedded</field>
+        </record>
+    </data>
+    <data depends="production">
+        <!-- Production -->
+        <record model="ir.ui.view" id="production_view_form">
+            <field name="model">production</field>
+            <field name="inherit" ref="production.production_view_form"/>
+            <field name="name">stock_plan_form_embedded</field>
+        </record>
+    </data>
+</tryton>
