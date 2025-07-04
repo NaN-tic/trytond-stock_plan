@@ -1,12 +1,12 @@
 <tree>
     <button name="destination_relate" tree_invisible="1"/>
     <button name="source_relate" tree_invisible="1"/>
-    <field name="quantity" />
-    <field name="uom" />
+    <field name="quantity"/>
+    <field name="uom" optional="1"/>
     <field name="product" expand="1"/>
-    <field name="source" expand="1"/>
+    <field name="source" expand="1" optional="1"/>
     <field name="source_document" optional="0"/>
-    <field name="destination" expand="1"/>
+    <field name="destination" expand="1" optional="1"/>
     <field name="destination_document" optional="0"/>
     <field name="day_difference" optional="0"/>
     <field name="source_date" optional="0"/>
