@@ -1,24 +1,21 @@
-<form col="6">
-    <group id="main-info" colspan="6" col="-1">
-        <label name="company"/>
-        <field name="company" xexpand="1"/>
+<form>
+    <label name="company"/>
+    <field name="company"/>
+    <label name="include_excess_stock"/>
+    <field name="include_excess_stock"/>
+    <label name="computed_at"/>
+    <group id="computed_at" col="2">
+        <field name="computed_at" widget="date"/>
+        <field name="computed_at" widget="time"/>
     </group>
-    <group id="calc-info" colspan="6" col="-1">
-        <label name="include_excess_stock"/>
-        <field name="include_excess_stock" xexpand="0"/>
-        <label name="computed_at"/>
-        <field name="computed_at" xexpand="0" widget="date"/>
-        <field name="computed_at" xexpand="0" widget="time"/>
-        <button name="calculate" xexpand="1"/>
+    <button name="calculate" colspan="2"/>
+    <label name="state"/>
+    <field name="state"/>
+    <group id="buttons" col="-1">
+        <button name="activate"/>
+        <button name="cancel"/>
+        <button name="draft"/>
+        <button name="deprecate"/>
     </group>
-    <group id="state-info" colspan="6" col="-1">
-        <label name="state"/>
-        <field name="state" xexpand="0" width="200"/>
-
-        <button name="activate" xexpand="0"/>
-        <button name="cancel" xexpand="0"/>
-        <button name="draft" xexpand="0"/>
-        <button name="deprecate" xexpand="0"/>
-    </group>
-    <link name="stock_plan.act_plan_line_relate" icon="tryton-open"/>
+    <link name="stock_plan.act_plan_line_relate" icon="tryton-open" colspan="4"/>
 </form>
