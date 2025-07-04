@@ -199,12 +199,12 @@ msgid "Plan Lines"
 msgstr "Línies del pla"
 
 msgctxt "model:ir.action,name:act_stock_plan"
-msgid "Stock Plan"
-msgstr "Pla d'estoc"
+msgid "Stock Plans"
+msgstr "Plans d'estoc"
 
 msgctxt "model:ir.action,name:act_stock_plan_line"
-msgid "Stock Plan Line"
-msgstr "Línia del pla d'estocs"
+msgid "Stock Plan Lines"
+msgstr "Línies del pla d'estocs"
 
 msgctxt ""
 "model:ir.action.act_window.domain,name:act_plan_line_relate_domain_all"
