@@ -212,6 +212,7 @@ class StockPlan(Workflow, ModelSQL, ModelView):
             ('type', '=', 'warehouse')
         ])
         moves = StockMove.search([
+            ('product.consumable', '=', False),
             ('state', 'not in', ('done', 'cancelled')),
             ('company', '=', plan.company.id),
         ], order=[
