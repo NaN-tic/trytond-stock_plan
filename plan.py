@@ -493,16 +493,16 @@ class Production(StockMixin, metaclass=PoolMeta):
     def get_to_lines(self, name):
         return [
             line
-            for input in self.inputs
-            for line in input.from_lines
-        ]
+            for output in self.outputs
+            for line in output.to_lines
+            ]
 
     def get_from_lines(self, name):
         return [
             line
-            for output in self.outputs
-            for line in output.to_lines
-        ]
+            for input in self.inputs
+            for line in input.from_lines
+            ]
 
 
 class StockMove(StockMixin, metaclass=PoolMeta):
