@@ -15,7 +15,7 @@
 
             <!-- Actions -->
         <record model="ir.action.act_window" id="act_stock_plan_line">
-            <field name="name">Stock Plan Line</field>
+            <field name="name">Stock Plan Lines</field>
             <field name="res_model">stock.plan.line</field>
         </record>
         <record model="ir.action.act_window.view" id="act_stock_plan_line_form">
@@ -81,7 +81,7 @@
 
             <!-- Actions -->
         <record model="ir.action.act_window" id="act_stock_plan">
-            <field name="name">Stock Plan</field>
+            <field name="name">Stock Plans</field>
             <field name="res_model">stock.plan</field>
         </record>
         <record model="ir.action.act_window.view" id="act_stock_plan_form">
