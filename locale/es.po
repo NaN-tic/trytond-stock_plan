@@ -200,12 +200,12 @@ msgid "Plan Lines"
 msgstr "Líneas del plan"
 
 msgctxt "model:ir.action,name:act_stock_plan"
-msgid "Stock Plan"
-msgstr "Plan de existencias"
+msgid "Stock Plans"
+msgstr "Planes de existencias"
 
 msgctxt "model:ir.action,name:act_stock_plan_line"
-msgid "Stock Plan Line"
-msgstr "Línea del plan de existencias"
+msgid "Stock Plan Lines"
+msgstr "Líneas del plan de existencias"
 
 msgctxt ""
 "model:ir.action.act_window.domain,name:act_plan_line_relate_domain_all"
