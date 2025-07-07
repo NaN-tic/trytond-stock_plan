@@ -379,16 +379,16 @@ class StockPlanLine(ModelSQL, ModelView):
 
         models = StockMove._get_document_origin() + StockMove._get_document()
         models = Model.search([
-            ('model', 'in', models),
-        ])
-        return [(None, '')] + [(m.model, m.name) for m in models]
+                ('name', 'in', models),
+                ])
+        return [(None, '')] + [(m.name, m.string) for m in models]
 
     @classmethod
     def get_source(cls):
         pool = Pool()
         Model = pool.get('ir.model')
-        models = Model.search([ ('model', 'in', cls._get_source()) ])
-        return [('', '')] + [(model.model, model.name) for model in models]
+        models = Model.search([ ('name', 'in', cls._get_source()) ])
+        return [('', '')] + [(model.name, model.string) for model in models]
 
     @classmethod
     def _get_source(cls):
