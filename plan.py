@@ -509,6 +509,40 @@ class Production(StockMixin, metaclass=PoolMeta):
 class StockMove(StockMixin, metaclass=PoolMeta):
     __name__ = 'stock.move'
 
+    from_stock_moves = fields.Function(fields.Many2Many('stock.move',
+        None, None, 'From Stock Moves'), 'get_from_stock_moves')
+    to_stock_moves = fields.Function(fields.Many2Many('stock.move',
+        None, None, 'To Stock Moves'), 'get_to_stock_moves')
+
+    def get_to_stock_moves(self, name):
+        pool = Pool()
+        StockPlanLine = pool.get('stock.plan.line')
+
+        results = StockPlanLine.search([
+            ('plan.state', '=', 'active'),
+            ('plan.company', '=', self.company.id),
+            ('source', '=', f'stock.move,{self.id}'),
+        ])
+
+        return [x.destination for x in results if x.destination]
+
+    def get_from_stock_moves(self, name):
+        pool = Pool()
+        StockMove = pool.get('stock.move')
+        StockPlanLine = pool.get('stock.plan.line')
+
+        results = StockPlanLine.search([
+            ('plan.state', '=', 'active'),
+            ('plan.company', '=', self.company.id),
+            ('destination', '=', self.id),
+        ])
+
+        moves = []
+        for result in results:
+            if isinstance(result.source, StockMove):
+                moves.append(result.source)
+        return moves
+
     def get_to_lines(self, name):
         pool = Pool()
         StockPlanLine = pool.get('stock.plan.line')

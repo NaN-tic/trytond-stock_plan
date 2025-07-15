@@ -211,11 +211,63 @@
         </record>
 
         <!-- Stock Move -->
+            <!-- Views -->
         <record model="ir.ui.view" id="move_view_form">
             <field name="model">stock.move</field>
             <field name="inherit" ref="stock.move_view_form"/>
             <field name="name">stock_plan_form_embedded</field>
         </record>
+        <record model="ir.ui.view" id="move_view_upwards_tree">
+            <field name="model">stock.move</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="20"/>
+            <field name="field_childs">to_stock_moves</field>
+            <field name="name">move_view_childs</field>
+        </record>
+        <record model="ir.ui.view" id="move_view_downwards_tree">
+            <field name="model">stock.move</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="20"/>
+            <field name="field_childs">from_stock_moves</field>
+            <field name="name">move_view_childs</field>
+        </record>
+
+            <!-- Actions -->
+        <record model="ir.action.act_window" id="act_stock_move_upwards">
+            <field name="name">Upwards</field>
+            <field name="res_model">stock.move</field>
+            <field name="domain" eval="[]" pyson="1"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_stock_move_upwards_tree">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="move_view_upwards_tree"/>
+            <field name="act_window" ref="act_stock_move_upwards" />
+        </record>
+        <record model="ir.action.act_window.view" id="act_stock_move_upwards_form">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="stock.move_view_form"/>
+            <field name="act_window" ref="act_stock_move_upwards"/>
+        </record>
+
+        <record model="ir.action.act_window" id="act_stock_move_downwards">
+            <field name="name">Downwards</field>
+            <field name="res_model">stock.move</field>
+            <field name="domain" eval="[('to_location.type', '=', 'customer')]" pyson="1"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_stock_move_downwards_tree">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="move_view_downwards_tree"/>
+            <field name="act_window" ref="act_stock_move_downwards" />
+        </record>
+        <record model="ir.action.act_window.view" id="act_stock_move_downwards_form">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="stock.move_view_form"/>
+            <field name="act_window" ref="act_stock_move_downwards"/>
+        </record>
+
+            <!-- Menus -->
+        <menuitem id="menu_stock_move_upwards" name="Upwards" parent="menu_stock_plan" sequence="10" icon="tryton-list" action="act_stock_move_upwards" />
+        <menuitem id="menu_stock_move_downwards" name="Downwards" parent="menu_stock_plan" sequence="20" icon="tryton-list" action="act_stock_move_downwards" />
 
         <!-- Stock Shipment In -->
         <record model="ir.ui.view" id="shipment_in_view_form">
