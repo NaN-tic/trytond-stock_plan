@@ -252,7 +252,7 @@
         <record model="ir.action.act_window" id="act_stock_move_downwards">
             <field name="name">Destination -&gt; Source</field>
             <field name="res_model">stock.move</field>
-            <field name="domain" eval="[('state', '=', 'draft'), ('to_location.type', '=', 'customer')]" pyson="1"/>
+            <field name="domain" eval="[('state', '=', 'draft')]" pyson="1"/>
         </record>
         <record model="ir.action.act_window.view" id="act_stock_move_downwards_tree">
             <field name="sequence" eval="10"/>
@@ -262,6 +262,51 @@
         <record model="ir.action.act_window.view" id="act_stock_move_downwards_form">
             <field name="sequence" eval="20"/>
             <field name="view" ref="stock.move_view_form"/>
+            <field name="act_window" ref="act_stock_move_downwards"/>
+        </record>
+
+            <!-- Tabs -->
+                <!-- FIXME: Comes from (idk if this is correct) -->
+        <record model="ir.action.act_window.domain" id="act_stock_move_upwards_supplier_domain">
+            <field name="name">Supplier Moves</field>
+            <field name="sequence" eval="10"/>
+            <field name="domain" eval="[('from_location.type', '=', 'supplier')]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_stock_move_upwards"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_stock_move_upwards_customer_domain">
+            <field name="name">Customer Moves</field>
+            <field name="sequence" eval="20"/>
+            <field name="domain" eval="[('from_location.type', '=', 'customer')]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_stock_move_upwards"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_stock_move_upwards_all_domain">
+            <field name="name">All</field>
+            <field name="sequence" eval="30"/>
+            <field name="domain" eval="[]" pyson="1"/>
+            <field name="act_window" ref="act_stock_move_upwards"/>
+        </record>
+
+                <!-- FIXME: Goes to -->
+        <record model="ir.action.act_window.domain" id="act_stock_move_downwards_customer_domain">
+            <field name="name">Customer Moves</field>
+            <field name="sequence" eval="10"/>
+            <field name="domain" eval="[('to_location.type', '=', 'customer')]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_stock_move_downwards"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_stock_move_downwards_supplier_domain">
+            <field name="name">Supplier Moves</field>
+            <field name="sequence" eval="20"/>
+            <field name="domain" eval="[('to_location.type', '=', 'supplier')]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_stock_move_downwards"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_stock_move_downwards_all_domain">
+            <field name="name">All</field>
+            <field name="sequence" eval="30"/>
+            <field name="domain" eval="[]" pyson="1"/>
             <field name="act_window" ref="act_stock_move_downwards"/>
         </record>
 

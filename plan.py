@@ -510,8 +510,6 @@ class Production(StockMixin, metaclass=PoolMeta):
 # TODO: Shipment -> Party
     # TODO: Implementar 'search' -> return ['OR', ('shipment.party', clause[1:], 'shipment.out')]
 # TODO: Mobisl modul: rec_name albarà client -> afegir contingut 'sale_references'
-# TODO: Tabs: moviments de proveidor | moviments de clients | Tots (S-D)
-# TODO: Tabs: moviments de client | proveidor | tots (D-S)
 # TODO: Per planned_date, ASC ->
 # TODO: Context
 class StockMove(StockMixin, metaclass=PoolMeta):
