@@ -325,8 +325,8 @@
         </record>
 
             <!-- Menus -->
-        <menuitem id="menu_stock_move_upwards" name="Source -> Destination" parent="menu_stock_plan" sequence="10" icon="tryton-list" action="act_source_dest_move" />
-        <menuitem id="menu_stock_move_downwards" name="Destination -> Source" parent="menu_stock_plan" sequence="20" icon="tryton-list" action="act_dest_source_move" />
+        <menuitem id="menu_move_source_dest" name="Source -> Destination" parent="menu_stock_plan" sequence="10" icon="tryton-list" action="act_source_dest_move" />
+        <menuitem id="menu_move_dest_source" name="Destination -> Source" parent="menu_stock_plan" sequence="20" icon="tryton-list" action="act_dest_source_move" />
 
         <!-- Stock Shipment In -->
         <record model="ir.ui.view" id="shipment_in_view_form">
