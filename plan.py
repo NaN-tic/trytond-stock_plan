@@ -513,10 +513,10 @@ class StockMove(StockMixin, metaclass=PoolMeta):
         fields.Many2One('party.party', 'Party'),
         'get_party', searcher='search_party')
     from_stock_moves = fields.Function(
-        fields.Many2Many('stock.move', None, None, 'From Stock Moves'),
+        fields.Many2Many('stock.move', None, None, 'Comes From (Stock Moves)'),
         'get_from_stock_moves')
     to_stock_moves = fields.Function(
-        fields.Many2Many('stock.move', None, None, 'To Stock Moves'),
+        fields.Many2Many('stock.move', None, None, 'Goes To (Stock Moves)'),
         'get_to_stock_moves')
 
     def get_party(self, name):
@@ -533,8 +533,10 @@ class StockMove(StockMixin, metaclass=PoolMeta):
 
     def get_to_stock_moves(self, name):
         records = self.get_to_lines(name)
-        if self.to_location.type == 'production':
+        if self.to_location.type == 'production': # FIXME: Perhaps may be an incoherence: 'Production' is extras_depends, so calling 'pool' is likely to crash. BUT it can we have 'production' type without 'production' module installed?
             records += self.document.to_lines
+        if self.shipment and hasattr(self.shipment, 'to_lines'):
+            records += self.shipment.to_lines
 
         return [x.destination for x in records if x.destination]
 
@@ -545,6 +547,8 @@ class StockMove(StockMixin, metaclass=PoolMeta):
         records = self.get_from_lines(name)
         if self.from_location.type == 'production':
             records += self.document.from_lines
+        if self.shipment and hasattr(self.shipment, 'from_lines'):
+            records += self.shipment.from_lines
 
         moves = []
         for record in records:
