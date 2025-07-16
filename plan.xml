@@ -237,6 +237,7 @@
             <field name="name">Source -&gt; Destination</field>
             <field name="res_model">stock.move</field>
             <field name="domain" eval="[('state', '=', 'draft')]" pyson="1"/>
+            <field name="order" eval="[('planned_date', 'ASC'), ('id', 'ASC')]" pyson="1"/>
         </record>
         <record model="ir.action.act_window.view" id="act_stock_move_upwards_tree">
             <field name="sequence" eval="10"/>
@@ -253,6 +254,7 @@
             <field name="name">Destination -&gt; Source</field>
             <field name="res_model">stock.move</field>
             <field name="domain" eval="[('state', '=', 'draft')]" pyson="1"/>
+            <field name="order" eval="[('planned_date', 'ASC'), ('id', 'ASC')]" pyson="1"/>
         </record>
         <record model="ir.action.act_window.view" id="act_stock_move_downwards_tree">
             <field name="sequence" eval="10"/>
