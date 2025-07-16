@@ -158,7 +158,7 @@
             <field name="rule_group" ref="rule_group_stock_plan"/>
         </record>
 
-            <!-- Related Records -->
+            <!-- Related Records: Plan Lines -->
         <record model="ir.action.act_window" id="act_plan_line_relate">
             <field name="name">Plan Lines</field>
             <field name="res_model">stock.plan.line</field>
@@ -238,6 +238,7 @@
             <field name="res_model">stock.move</field>
             <field name="domain" eval="[('state', '=', 'draft')]" pyson="1"/>
             <field name="order" eval="[('planned_date', 'ASC'), ('id', 'ASC')]" pyson="1"/>
+            <field name="context" eval="{'stock_plan': Eval('active_id'), 'active_model': Eval('active_model')}" pyson="1"/>
         </record>
         <record model="ir.action.act_window.view" id="act_stock_move_upwards_tree">
             <field name="sequence" eval="10"/>
@@ -277,6 +278,7 @@
             <field name="res_model">stock.move</field>
             <field name="domain" eval="[('state', '=', 'draft')]" pyson="1"/>
             <field name="order" eval="[('planned_date', 'ASC'), ('id', 'ASC')]" pyson="1"/>
+            <field name="context" eval="{'stock_plan': Eval('active_id'), 'active_model': Eval('active_model')}" pyson="1"/>
         </record>
         <record model="ir.action.act_window.view" id="act_stock_move_downwards_tree">
             <field name="sequence" eval="10"/>
@@ -308,6 +310,18 @@
             <field name="sequence" eval="30"/>
             <field name="domain" eval="[]" pyson="1"/>
             <field name="act_window" ref="act_stock_move_downwards"/>
+        </record>
+
+            <!-- Related Records: Stock Move Context -->
+        <record model="ir.action.keyword" id="act_stock_move_upwards_keyword">
+            <field name="keyword">form_relate</field>
+            <field name="model">stock.plan,-1</field>
+            <field name="action" ref="act_stock_move_upwards"/>
+        </record>
+        <record model="ir.action.keyword" id="act_stock_move_downwards_keyword">
+            <field name="keyword">form_relate</field>
+            <field name="model">stock.plan,-1</field>
+            <field name="action" ref="act_stock_move_downwards"/>
         </record>
 
             <!-- Menus -->

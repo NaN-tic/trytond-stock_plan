@@ -585,8 +585,10 @@ class StockMove(StockMixin, metaclass=PoolMeta):
         transaction = Transaction()
         context = transaction.context
 
-        if 'stock_plan' in context:
-            return('plan.id', '=', int(context['stock_plan']))
+        active_model = context.get('active_model')
+        stock_plan = context.get('stock_plan')
+        if active_model == 'stock.plan' and isinstance(stock_plan, int):
+            return ('plan.id', '=', stock_plan)
         return ('plan.state', '=', 'active')
 
 
