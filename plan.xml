@@ -234,9 +234,9 @@
 
             <!-- Actions -->
         <record model="ir.action.act_window" id="act_stock_move_upwards">
-            <field name="name">Upwards</field>
+            <field name="name">Source -&gt; Destination</field>
             <field name="res_model">stock.move</field>
-            <field name="domain" eval="[]" pyson="1"/>
+            <field name="domain" eval="[('state', '=', 'draft')]" pyson="1"/>
         </record>
         <record model="ir.action.act_window.view" id="act_stock_move_upwards_tree">
             <field name="sequence" eval="10"/>
@@ -250,9 +250,9 @@
         </record>
 
         <record model="ir.action.act_window" id="act_stock_move_downwards">
-            <field name="name">Downwards</field>
+            <field name="name">Destination -&gt; Source</field>
             <field name="res_model">stock.move</field>
-            <field name="domain" eval="[('to_location.type', '=', 'customer')]" pyson="1"/>
+            <field name="domain" eval="[('state', '=', 'draft'), ('to_location.type', '=', 'customer')]" pyson="1"/>
         </record>
         <record model="ir.action.act_window.view" id="act_stock_move_downwards_tree">
             <field name="sequence" eval="10"/>
@@ -266,8 +266,8 @@
         </record>
 
             <!-- Menus -->
-        <menuitem id="menu_stock_move_upwards" name="Upwards" parent="menu_stock_plan" sequence="10" icon="tryton-list" action="act_stock_move_upwards" />
-        <menuitem id="menu_stock_move_downwards" name="Downwards" parent="menu_stock_plan" sequence="20" icon="tryton-list" action="act_stock_move_downwards" />
+        <menuitem id="menu_stock_move_upwards" name="Source -> Destination" parent="menu_stock_plan" sequence="10" icon="tryton-list" action="act_stock_move_upwards" />
+        <menuitem id="menu_stock_move_downwards" name="Destination -> Source" parent="menu_stock_plan" sequence="20" icon="tryton-list" action="act_stock_move_downwards" />
 
         <!-- Stock Shipment In -->
         <record model="ir.ui.view" id="shipment_in_view_form">

@@ -505,7 +505,15 @@ class Production(StockMixin, metaclass=PoolMeta):
             for line in input.from_lines
             ]
 
-
+# TODO: Productions
+# TODO: Domain principal state 'esborrany'
+# TODO: Shipment -> Party
+    # TODO: Implementar 'search' -> return ['OR', ('shipment.party', clause[1:], 'shipment.out')]
+# TODO: Mobisl modul: rec_name albarà client -> afegir contingut 'sale_references'
+# TODO: Tabs: moviments de proveidor | moviments de clients | Tots (S-D)
+# TODO: Tabs: moviments de client | proveidor | tots (D-S)
+# TODO: Per planned_date, ASC ->
+# TODO: Context
 class StockMove(StockMixin, metaclass=PoolMeta):
     __name__ = 'stock.move'
 
@@ -518,29 +526,33 @@ class StockMove(StockMixin, metaclass=PoolMeta):
         pool = Pool()
         StockPlanLine = pool.get('stock.plan.line')
 
-        results = StockPlanLine.search([
+        records = StockPlanLine.search([
             ('plan.state', '=', 'active'),
             ('plan.company', '=', self.company.id),
             ('source', '=', f'stock.move,{self.id}'),
         ])
+        if self.to_location.type == 'production':
+            records += self.document.to_lines
 
-        return [x.destination for x in results if x.destination]
+        return [x.destination for x in records if x.destination]
 
     def get_from_stock_moves(self, name):
         pool = Pool()
         StockMove = pool.get('stock.move')
         StockPlanLine = pool.get('stock.plan.line')
 
-        results = StockPlanLine.search([
+        records = StockPlanLine.search([
             ('plan.state', '=', 'active'),
             ('plan.company', '=', self.company.id),
             ('destination', '=', self.id),
         ])
+        if self.from_location.type == 'production':
+            records += self.document.from_lines
 
         moves = []
-        for result in results:
-            if isinstance(result.source, StockMove):
-                moves.append(result.source)
+        for record in records:
+            if isinstance(record.source, StockMove):
+                moves.append(record.source)
         return moves
 
     def get_to_lines(self, name):
