@@ -505,19 +505,32 @@ class Production(StockMixin, metaclass=PoolMeta):
             for line in input.from_lines
             ]
 
-# TODO: Productions
-# TODO: Domain principal state 'esborrany'
-# TODO: Shipment -> Party
-    # TODO: Implementar 'search' -> return ['OR', ('shipment.party', clause[1:], 'shipment.out')]
 # TODO: Mobisl modul: rec_name albarà client -> afegir contingut 'sale_references'
 # TODO: Context
 class StockMove(StockMixin, metaclass=PoolMeta):
     __name__ = 'stock.move'
 
-    from_stock_moves = fields.Function(fields.Many2Many('stock.move',
-        None, None, 'From Stock Moves'), 'get_from_stock_moves')
-    to_stock_moves = fields.Function(fields.Many2Many('stock.move',
-        None, None, 'To Stock Moves'), 'get_to_stock_moves')
+    party_related = fields.Function(
+        fields.Many2One('party.party', 'Party'),
+        'get_party_related', searcher='search_party_related')
+    from_stock_moves = fields.Function(
+        fields.Many2Many('stock.move', None, None, 'From Stock Moves'),
+        'get_from_stock_moves')
+    to_stock_moves = fields.Function(
+        fields.Many2Many('stock.move', None, None, 'To Stock Moves'),
+        'get_to_stock_moves')
+
+    def get_party_related(self, name):
+        pool = Pool()
+        StockShipmentIn = pool.get('stock.shipment.in')
+        StockShipmentInReturn = pool.get('stock.shipment.in.return')
+        StockShipmentOut = pool.get('stock.shipment.out')
+        StockShipmentOutReturn = pool.get('stock.shipment.out.return')
+
+        if isinstance(self.document, (StockShipmentOut, StockShipmentOutReturn)):
+            return self.document.customer
+        elif isinstance(self.document, (StockShipmentIn, StockShipmentInReturn)):
+            return self.document.supplier
 
     def get_to_stock_moves(self, name):
         pool = Pool()
@@ -571,6 +584,16 @@ class StockMove(StockMixin, metaclass=PoolMeta):
             ('plan.company', '=', self.company.id),
             ('destination', '=', self.id),
         ])
+
+    # TODO: Implementar 'search' -> return ['OR', ('shipment.party', clause[1:], 'shipment.out')]
+    # FIXME: Falta la funció de cerca del camp "Document" a "Moviment d'existències".
+    @classmethod
+    def search_party_related(cls, name, clause):
+        return ['OR',
+            ('document.customer', *clause[1:], 'shipment.out'),
+            ('document.customer', clause[1:], 'shipment.out.return'),
+            ('document.supplier', clause[1:], 'shipment.in'),
+            ('document.supplier', clause[1:], 'shipment.in.return')]
 
 
 class StockShipmentMixin(StockMixin):
