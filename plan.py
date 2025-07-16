@@ -505,7 +505,7 @@ class Production(StockMixin, metaclass=PoolMeta):
             for line in input.from_lines
             ]
 
-# TODO: Context
+
 class StockMove(StockMixin, metaclass=PoolMeta):
     __name__ = 'stock.move'
 
