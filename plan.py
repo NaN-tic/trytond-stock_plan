@@ -510,7 +510,8 @@ class StockMove(StockMixin, metaclass=PoolMeta):
     __name__ = 'stock.move'
 
     party = fields.Function(
-        fields.Many2One('party.party', 'Party'),
+        fields.Many2One('party.party', 'Party',
+            context={'company': Eval('company', -1)}),
         'get_party', searcher='search_party')
     from_stock_moves = fields.Function(
         fields.Many2Many('stock.move', None, None, 'Comes From (Stock Moves)'),
