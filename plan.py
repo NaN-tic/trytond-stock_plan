@@ -505,14 +505,13 @@ class Production(StockMixin, metaclass=PoolMeta):
             for line in input.from_lines
             ]
 
-# TODO: Mobisl modul: rec_name albarà client -> afegir contingut 'sale_references'
 # TODO: Context
 class StockMove(StockMixin, metaclass=PoolMeta):
     __name__ = 'stock.move'
 
-    party_related = fields.Function(
+    party = fields.Function(
         fields.Many2One('party.party', 'Party'),
-        'get_party_related', searcher='search_party_related')
+        'get_party', searcher='search_party')
     from_stock_moves = fields.Function(
         fields.Many2Many('stock.move', None, None, 'From Stock Moves'),
         'get_from_stock_moves')
@@ -520,27 +519,20 @@ class StockMove(StockMixin, metaclass=PoolMeta):
         fields.Many2Many('stock.move', None, None, 'To Stock Moves'),
         'get_to_stock_moves')
 
-    def get_party_related(self, name):
+    def get_party(self, name):
         pool = Pool()
         StockShipmentIn = pool.get('stock.shipment.in')
         StockShipmentInReturn = pool.get('stock.shipment.in.return')
         StockShipmentOut = pool.get('stock.shipment.out')
         StockShipmentOutReturn = pool.get('stock.shipment.out.return')
 
-        if isinstance(self.document, (StockShipmentOut, StockShipmentOutReturn)):
-            return self.document.customer
-        elif isinstance(self.document, (StockShipmentIn, StockShipmentInReturn)):
-            return self.document.supplier
+        if isinstance(self.shipment, (StockShipmentOut, StockShipmentOutReturn)):
+            return self.shipment.customer
+        elif isinstance(self.shipment, (StockShipmentIn, StockShipmentInReturn)):
+            return self.shipment.supplier
 
     def get_to_stock_moves(self, name):
-        pool = Pool()
-        StockPlanLine = pool.get('stock.plan.line')
-
-        records = StockPlanLine.search([
-            ('plan.state', '=', 'active'),
-            ('plan.company', '=', self.company.id),
-            ('source', '=', f'stock.move,{self.id}'),
-        ])
+        records = self.get_to_lines(name)
         if self.to_location.type == 'production':
             records += self.document.to_lines
 
@@ -549,13 +541,8 @@ class StockMove(StockMixin, metaclass=PoolMeta):
     def get_from_stock_moves(self, name):
         pool = Pool()
         StockMove = pool.get('stock.move')
-        StockPlanLine = pool.get('stock.plan.line')
 
-        records = StockPlanLine.search([
-            ('plan.state', '=', 'active'),
-            ('plan.company', '=', self.company.id),
-            ('destination', '=', self.id),
-        ])
+        records = self.get_from_lines(name)
         if self.from_location.type == 'production':
             records += self.document.from_lines
 
@@ -570,7 +557,7 @@ class StockMove(StockMixin, metaclass=PoolMeta):
         StockPlanLine = pool.get('stock.plan.line')
 
         return StockPlanLine.search([
-            ('plan.state', '=', 'active'),
+            self.get_plan_domain(),
             ('plan.company', '=', self.company.id),
             ('source', '=', f'stock.move,{self.id}'),
         ])
@@ -580,20 +567,27 @@ class StockMove(StockMixin, metaclass=PoolMeta):
         StockPlanLine = pool.get('stock.plan.line')
 
         return StockPlanLine.search([
-            ('plan.state', '=', 'active'),
+            self.get_plan_domain(),
             ('plan.company', '=', self.company.id),
             ('destination', '=', self.id),
         ])
 
-    # TODO: Implementar 'search' -> return ['OR', ('shipment.party', clause[1:], 'shipment.out')]
-    # FIXME: Falta la funció de cerca del camp "Document" a "Moviment d'existències".
     @classmethod
-    def search_party_related(cls, name, clause):
+    def search_party(cls, name, clause):
         return ['OR',
-            ('document.customer', *clause[1:], 'shipment.out'),
-            ('document.customer', clause[1:], 'shipment.out.return'),
-            ('document.supplier', clause[1:], 'shipment.in'),
-            ('document.supplier', clause[1:], 'shipment.in.return')]
+            ('shipment.customer', *clause[1:], 'shipment.out'),
+            ('shipment.customer', *clause[1:], 'shipment.out.return'),
+            ('shipment.supplier', *clause[1:], 'shipment.in'),
+            ('shipment.supplier', *clause[1:], 'shipment.in.return')]
+
+    @classmethod
+    def get_plan_domain(cls):
+        transaction = Transaction()
+        context = transaction.context
+
+        if 'stock_plan' in context:
+            return('plan.id', '=', int(context['stock_plan']))
+        return ('plan.state', '=', 'active')
 
 
 class StockShipmentMixin(StockMixin):

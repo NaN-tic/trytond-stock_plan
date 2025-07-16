@@ -249,26 +249,7 @@
             <field name="view" ref="stock.move_view_form"/>
             <field name="act_window" ref="act_stock_move_upwards"/>
         </record>
-
-        <record model="ir.action.act_window" id="act_stock_move_downwards">
-            <field name="name">Destination -&gt; Source</field>
-            <field name="res_model">stock.move</field>
-            <field name="domain" eval="[('state', '=', 'draft')]" pyson="1"/>
-            <field name="order" eval="[('planned_date', 'ASC'), ('id', 'ASC')]" pyson="1"/>
-        </record>
-        <record model="ir.action.act_window.view" id="act_stock_move_downwards_tree">
-            <field name="sequence" eval="10"/>
-            <field name="view" ref="move_view_downwards_tree"/>
-            <field name="act_window" ref="act_stock_move_downwards" />
-        </record>
-        <record model="ir.action.act_window.view" id="act_stock_move_downwards_form">
-            <field name="sequence" eval="20"/>
-            <field name="view" ref="stock.move_view_form"/>
-            <field name="act_window" ref="act_stock_move_downwards"/>
-        </record>
-
-            <!-- Tabs -->
-                <!-- FIXME: Comes from (idk if this is correct) -->
+                <!-- Tabs -->
         <record model="ir.action.act_window.domain" id="act_stock_move_upwards_supplier_domain">
             <field name="name">Supplier Moves</field>
             <field name="sequence" eval="10"/>
@@ -290,7 +271,24 @@
             <field name="act_window" ref="act_stock_move_upwards"/>
         </record>
 
-                <!-- FIXME: Goes to -->
+            <!-- Actions -->
+        <record model="ir.action.act_window" id="act_stock_move_downwards">
+            <field name="name">Destination -&gt; Source</field>
+            <field name="res_model">stock.move</field>
+            <field name="domain" eval="[('state', '=', 'draft')]" pyson="1"/>
+            <field name="order" eval="[('planned_date', 'ASC'), ('id', 'ASC')]" pyson="1"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_stock_move_downwards_tree">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="move_view_downwards_tree"/>
+            <field name="act_window" ref="act_stock_move_downwards" />
+        </record>
+        <record model="ir.action.act_window.view" id="act_stock_move_downwards_form">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="stock.move_view_form"/>
+            <field name="act_window" ref="act_stock_move_downwards"/>
+        </record>
+                <!-- Tabs -->
         <record model="ir.action.act_window.domain" id="act_stock_move_downwards_customer_domain">
             <field name="name">Customer Moves</field>
             <field name="sequence" eval="10"/>
