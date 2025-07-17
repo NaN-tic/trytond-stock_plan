@@ -24,9 +24,21 @@ msgctxt "field:stock.move,from_lines:"
 msgid "Comes From"
 msgstr "Procede de"
 
+msgctxt "field:stock.move,from_stock_moves:"
+msgid "Comes From (Stock Moves)"
+msgstr "Prodece de (movimiento de existencias)"
+
+msgctxt "field:stock.move,party:"
+msgid "Party"
+msgstr "Tercero"
+
 msgctxt "field:stock.move,to_lines:"
 msgid "Goes To"
 msgstr "Irá hacia"
+
+msgctxt "field:stock.move,to_stock_moves:"
+msgid "Goes To (Stock Moves)"
+msgstr "Irá hacia (movimiento de existencias)"
 
 msgctxt "field:stock.plan,company:"
 msgid "Company"
@@ -195,9 +207,17 @@ msgctxt "help:stock.plan.line,uom:"
 msgid "The Unit of Measure for the quantities."
 msgstr "La unidad de medida de las cantidades."
 
+msgctxt "model:ir.action,name:act_dest_source_move"
+msgid "Destination → Source"
+msgstr "Destino → Procedencia"
+
 msgctxt "model:ir.action,name:act_plan_line_relate"
 msgid "Plan Lines"
 msgstr "Líneas del plan"
+
+msgctxt "model:ir.action,name:act_source_dest_move"
+msgid "Source → Destination"
+msgstr "Procedencia → Destino"
 
 msgctxt "model:ir.action,name:act_stock_plan"
 msgid "Stock Plans"
@@ -206,6 +226,21 @@ msgstr "Planes de existencias"
 msgctxt "model:ir.action,name:act_stock_plan_line"
 msgid "Stock Plan Lines"
 msgstr "Líneas del plan de existencias"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_dest_source_move_all_domain"
+msgid "All"
+msgstr "Todo"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_dest_source_move_customer_domain"
+msgid "Customer Moves"
+msgstr "Movimientos de clientes"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_dest_source_move_supplier_domain"
+msgid "Supplier Moves"
+msgstr "Movimientos de proveedores"
 
 msgctxt ""
 "model:ir.action.act_window.domain,name:act_plan_line_relate_domain_all"
@@ -229,6 +264,21 @@ msgctxt ""
 "act_plan_line_relate_domain_without_stock"
 msgid "Without Stock"
 msgstr "Sin stock"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_source_dest_move_all_domain"
+msgid "All"
+msgstr "Todo"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_source_dest_move_customer_domain"
+msgid "Customer Moves"
+msgstr "Movimientos de clientes"
+
+msgctxt ""
+"model:ir.action.act_window.domain,name:act_source_dest_move_supplier_domain"
+msgid "Supplier Moves"
+msgstr "Movimientos de proveedores"
 
 msgctxt "model:ir.action.act_window.domain,name:act_stock_plan_active_domain"
 msgid "Active"
@@ -278,6 +328,10 @@ msgctxt "model:ir.model.button,string:activate_button"
 msgid "Activate"
 msgstr "Activar"
 
+msgctxt "model:ir.model.button,string:calculate_button"
+msgid "Calculate"
+msgstr "Calcular"
+
 msgctxt "model:ir.model.button,string:cancel_button"
 msgid "Cancel"
 msgstr "Cancelar"
@@ -294,10 +348,6 @@ msgctxt "model:ir.model.button,string:draft_button"
 msgid "Draft"
 msgstr "Borrador"
 
-msgctxt "model:ir.model.button,string:calculate_button"
-msgid "Calculate"
-msgstr "Calcular"
-
 msgctxt "model:ir.model.button,string:source_relate_button"
 msgid "Open related source lines"
 msgstr "Abrir líneas de procedencia relacionadas"
@@ -305,6 +355,14 @@ msgstr "Abrir líneas de procedencia relacionadas"
 msgctxt "model:ir.rule.group,name:rule_group_stock_plan"
 msgid "Stock Plan Rules"
 msgstr "Reglas del plan de existencias"
+
+msgctxt "model:ir.ui.menu,name:menu_move_dest_source"
+msgid "Destination → Source"
+msgstr "Destino → Procedencia"
+
+msgctxt "model:ir.ui.menu,name:menu_move_source_dest"
+msgid "Source → Destination"
+msgstr "Procedencia → Destino"
 
 msgctxt "model:ir.ui.menu,name:menu_stock_plan"
 msgid "Stock Plan"
