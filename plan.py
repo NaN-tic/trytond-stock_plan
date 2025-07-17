@@ -509,12 +509,61 @@ class Production(StockMixin, metaclass=PoolMeta):
 class StockMove(StockMixin, metaclass=PoolMeta):
     __name__ = 'stock.move'
 
+    party = fields.Function(
+        fields.Many2One('party.party', 'Party',
+            context={'company': Eval('company', -1)}),
+        'get_party', searcher='search_party')
+    from_stock_moves = fields.Function(
+        fields.Many2Many('stock.move', None, None, 'Comes From (Stock Moves)'),
+        'get_from_stock_moves')
+    to_stock_moves = fields.Function(
+        fields.Many2Many('stock.move', None, None, 'Goes To (Stock Moves)'),
+        'get_to_stock_moves')
+
+    def get_party(self, name):
+        pool = Pool()
+        StockShipmentIn = pool.get('stock.shipment.in')
+        StockShipmentInReturn = pool.get('stock.shipment.in.return')
+        StockShipmentOut = pool.get('stock.shipment.out')
+        StockShipmentOutReturn = pool.get('stock.shipment.out.return')
+
+        if isinstance(self.shipment, (StockShipmentOut, StockShipmentOutReturn)):
+            return self.shipment.customer
+        elif isinstance(self.shipment, (StockShipmentIn, StockShipmentInReturn)):
+            return self.shipment.supplier
+
+    def get_to_stock_moves(self, name):
+        records = self.get_to_lines(name)
+        if self.to_location.type == 'production' and self.document:
+            records += self.document.to_lines
+        # Ensure that the *specific* shipment type has the 'to_lines' field.
+        if self.shipment and hasattr(self.shipment, 'to_lines'):
+            records += self.shipment.to_lines
+        return [x.destination for x in records if x.destination]
+
+    def get_from_stock_moves(self, name):
+        pool = Pool()
+        StockMove = pool.get('stock.move')
+
+        records = self.get_from_lines(name)
+        if self.from_location.type == 'production' and self.document:
+            records += self.document.from_lines
+        # Ensure that the *specific* shipment type has the 'to_lines' field.
+        if self.shipment and hasattr(self.shipment, 'from_lines'):
+            records += self.shipment.from_lines
+
+        moves = []
+        for record in records:
+            if isinstance(record.source, StockMove):
+                moves.append(record.source)
+        return moves
+
     def get_to_lines(self, name):
         pool = Pool()
         StockPlanLine = pool.get('stock.plan.line')
 
         return StockPlanLine.search([
-            ('plan.state', '=', 'active'),
+            self.get_plan_domain(),
             ('plan.company', '=', self.company.id),
             ('source', '=', f'stock.move,{self.id}'),
         ])
@@ -524,10 +573,29 @@ class StockMove(StockMixin, metaclass=PoolMeta):
         StockPlanLine = pool.get('stock.plan.line')
 
         return StockPlanLine.search([
-            ('plan.state', '=', 'active'),
+            self.get_plan_domain(),
             ('plan.company', '=', self.company.id),
             ('destination', '=', self.id),
         ])
+
+    @classmethod
+    def search_party(cls, name, clause):
+        return ['OR',
+            ('shipment.customer', *clause[1:], 'shipment.out'),
+            ('shipment.customer', *clause[1:], 'shipment.out.return'),
+            ('shipment.supplier', *clause[1:], 'shipment.in'),
+            ('shipment.supplier', *clause[1:], 'shipment.in.return')]
+
+    @classmethod
+    def get_plan_domain(cls):
+        transaction = Transaction()
+        context = transaction.context
+
+        active_model = context.get('active_model')
+        stock_plan = context.get('stock_plan')
+        if active_model == 'stock.plan' and isinstance(stock_plan, int):
+            return ('plan.id', '=', stock_plan)
+        return ('plan.state', '=', 'active')
 
 
 class StockShipmentMixin(StockMixin):

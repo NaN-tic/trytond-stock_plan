@@ -158,7 +158,7 @@
             <field name="rule_group" ref="rule_group_stock_plan"/>
         </record>
 
-            <!-- Related Records -->
+            <!-- Related Records: Plan Lines -->
         <record model="ir.action.act_window" id="act_plan_line_relate">
             <field name="name">Plan Lines</field>
             <field name="res_model">stock.plan.line</field>
@@ -211,11 +211,122 @@
         </record>
 
         <!-- Stock Move -->
+            <!-- Views -->
         <record model="ir.ui.view" id="move_view_form">
             <field name="model">stock.move</field>
             <field name="inherit" ref="stock.move_view_form"/>
             <field name="name">stock_plan_form_embedded</field>
         </record>
+        <record model="ir.ui.view" id="move_view_source_dest_tree">
+            <field name="model">stock.move</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="20"/>
+            <field name="field_childs">to_stock_moves</field>
+            <field name="name">move_view_childs</field>
+        </record>
+        <record model="ir.ui.view" id="move_view_dest_source_tree">
+            <field name="model">stock.move</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="20"/>
+            <field name="field_childs">from_stock_moves</field>
+            <field name="name">move_view_childs</field>
+        </record>
+
+            <!-- Actions -->
+        <record model="ir.action.act_window" id="act_source_dest_move">
+            <field name="name">Source → Destination</field>
+            <field name="res_model">stock.move</field>
+            <field name="domain" eval="[('state', '=', 'draft')]" pyson="1"/>
+            <field name="order" eval="[('planned_date', 'ASC'), ('id', 'ASC')]" pyson="1"/>
+            <field name="context" eval="{'stock_plan': Eval('active_id'), 'active_model': Eval('active_model')}" pyson="1"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_source_dest_move_tree">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="move_view_source_dest_tree"/>
+            <field name="act_window" ref="act_source_dest_move" />
+        </record>
+        <record model="ir.action.act_window.view" id="act_source_dest_move_form">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="stock.move_view_form"/>
+            <field name="act_window" ref="act_source_dest_move"/>
+        </record>
+                <!-- Tabs -->
+        <record model="ir.action.act_window.domain" id="act_source_dest_move_supplier_domain">
+            <field name="name">Supplier Moves</field>
+            <field name="sequence" eval="10"/>
+            <field name="domain" eval="[('from_location.type', '=', 'supplier')]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_source_dest_move"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_source_dest_move_customer_domain">
+            <field name="name">Customer Moves</field>
+            <field name="sequence" eval="20"/>
+            <field name="domain" eval="[('from_location.type', '=', 'customer')]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_source_dest_move"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_source_dest_move_all_domain">
+            <field name="name">All</field>
+            <field name="sequence" eval="30"/>
+            <field name="domain" eval="[]" pyson="1"/>
+            <field name="act_window" ref="act_source_dest_move"/>
+        </record>
+
+            <!-- Actions -->
+        <record model="ir.action.act_window" id="act_dest_source_move">
+            <field name="name">Destination → Source</field>
+            <field name="res_model">stock.move</field>
+            <field name="domain" eval="[('state', '=', 'draft')]" pyson="1"/>
+            <field name="order" eval="[('planned_date', 'ASC'), ('id', 'ASC')]" pyson="1"/>
+            <field name="context" eval="{'stock_plan': Eval('active_id'), 'active_model': Eval('active_model')}" pyson="1"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_dest_source_move_tree">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="move_view_dest_source_tree"/>
+            <field name="act_window" ref="act_dest_source_move" />
+        </record>
+        <record model="ir.action.act_window.view" id="act_dest_source_move_form">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="stock.move_view_form"/>
+            <field name="act_window" ref="act_dest_source_move"/>
+        </record>
+                <!-- Tabs -->
+        <record model="ir.action.act_window.domain" id="act_dest_source_move_customer_domain">
+            <field name="name">Customer Moves</field>
+            <field name="sequence" eval="10"/>
+            <field name="domain" eval="[('to_location.type', '=', 'customer')]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_dest_source_move"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_dest_source_move_supplier_domain">
+            <field name="name">Supplier Moves</field>
+            <field name="sequence" eval="20"/>
+            <field name="domain" eval="[('to_location.type', '=', 'supplier')]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_dest_source_move"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_dest_source_move_all_domain">
+            <field name="name">All</field>
+            <field name="sequence" eval="30"/>
+            <field name="domain" eval="[]" pyson="1"/>
+            <field name="act_window" ref="act_dest_source_move"/>
+        </record>
+
+            <!-- Related Records: Stock Move Context -->
+        <record model="ir.action.keyword" id="act_source_dest_move_keyword">
+            <field name="keyword">form_relate</field>
+            <field name="model">stock.plan,-1</field>
+            <field name="action" ref="act_source_dest_move"/>
+        </record>
+        <record model="ir.action.keyword" id="act_dest_source_move_keyword">
+            <field name="keyword">form_relate</field>
+            <field name="model">stock.plan,-1</field>
+            <field name="action" ref="act_dest_source_move"/>
+        </record>
+
+            <!-- Menus -->
+        <menuitem id="menu_move_source_dest" name="Source → Destination" parent="menu_stock_plan" sequence="10" icon="tryton-list" action="act_source_dest_move" />
+        <menuitem id="menu_move_dest_source" name="Destination → Source" parent="menu_stock_plan" sequence="20" icon="tryton-list" action="act_dest_source_move" />
 
         <!-- Stock Shipment In -->
         <record model="ir.ui.view" id="shipment_in_view_form">
