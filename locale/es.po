@@ -297,16 +297,16 @@ msgid "You cannot activate more than one plan at a time."
 msgstr "No puedes activar más de un plan a la vez."
 
 msgctxt "model:ir.message,text:msg_plan_without_calculation"
-msgid "The plans \"$(plan)\" have not been computed yet."
-msgstr "Los planes \"$(plan)\" aún no se han calculado."
+msgid "The plans \"%(plan)s\" have not been computed yet."
+msgstr "Los planes \"%(plan)s\" aún no se han calculado."
 
 msgctxt "model:ir.message,text:msg_title_destination_relate"
-msgid "Lines with destination \"$(destination)\""
-msgstr "Líneas con destino \"$(destination)\""
+msgid "Lines with destination \"%(destination)s\""
+msgstr "Líneas con destino \"%(destination)s\""
 
 msgctxt "model:ir.message,text:msg_title_source_relate"
-msgid "Lines with source \"$(source)\""
-msgstr "Líneas con procedencia \"$(source)\""
+msgid "Lines with source \"%(source)s\""
+msgstr "Líneas con procedencia \"%(source)s\""
 
 msgctxt "model:ir.message,text:msg_warn_line_without_destination"
 msgid ""

@@ -164,7 +164,7 @@ class StockPlan(Workflow, ModelSQL, ModelView):
             raise UserError(
                 gettext('stock_plan.msg_active_transition_multiple_plans'))
 
-        error_plans = [plan for plan in plans if not plan.computed_at]
+        error_plans = [plan.rec_name for plan in plans if not plan.computed_at]
         if error_plans:
             raise UserError(
                 gettext('stock_plan.msg_plan_without_calculation',
