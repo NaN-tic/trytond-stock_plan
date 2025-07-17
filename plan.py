@@ -534,11 +534,11 @@ class StockMove(StockMixin, metaclass=PoolMeta):
 
     def get_to_stock_moves(self, name):
         records = self.get_to_lines(name)
-        if self.to_location.type == 'production': # FIXME: Perhaps may be an incoherence: 'Production' is extras_depends, so calling 'pool' is likely to crash. BUT it can we have 'production' type without 'production' module installed?
+        if self.to_location.type == 'production' and self.document:
             records += self.document.to_lines
+        # Ensure that the *specific* shipment type has the 'to_lines' field.
         if self.shipment and hasattr(self.shipment, 'to_lines'):
             records += self.shipment.to_lines
-
         return [x.destination for x in records if x.destination]
 
     def get_from_stock_moves(self, name):
@@ -546,8 +546,9 @@ class StockMove(StockMixin, metaclass=PoolMeta):
         StockMove = pool.get('stock.move')
 
         records = self.get_from_lines(name)
-        if self.from_location.type == 'production':
+        if self.from_location.type == 'production' and self.document:
             records += self.document.from_lines
+        # Ensure that the *specific* shipment type has the 'to_lines' field.
         if self.shipment and hasattr(self.shipment, 'from_lines'):
             records += self.shipment.from_lines
 
