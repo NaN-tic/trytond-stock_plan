@@ -365,7 +365,7 @@ msgstr "Procedència → Destinació"
 
 msgctxt "model:ir.ui.menu,name:menu_stock_plan"
 msgid "Stock Plan"
-msgstr "Pla d'estoc"
+msgstr "Plans d'estoc"
 
 msgctxt "model:stock.plan,name:"
 msgid "Stock Plan"
