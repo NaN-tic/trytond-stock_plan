@@ -581,10 +581,10 @@ class StockMove(StockMixin, metaclass=PoolMeta):
     @classmethod
     def search_party(cls, name, clause):
         return ['OR',
-            ('shipment.customer', *clause[1:], 'shipment.out'),
-            ('shipment.customer', *clause[1:], 'shipment.out.return'),
-            ('shipment.supplier', *clause[1:], 'shipment.in'),
-            ('shipment.supplier', *clause[1:], 'shipment.in.return')]
+            ('shipment.customer', *clause[1:], 'stock.shipment.out'),
+            ('shipment.customer', *clause[1:], 'stock.shipment.out.return'),
+            ('shipment.supplier', *clause[1:], 'stock.shipment.in'),
+            ('shipment.supplier', *clause[1:], 'stock.shipment.in.return')]
 
     @classmethod
     def get_plan_domain(cls):
