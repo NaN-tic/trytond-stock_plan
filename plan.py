@@ -486,6 +486,57 @@ class StockMixin():
         None, None, 'Goes To'), 'get_to_lines')
     from_lines = fields.Function(fields.Many2Many('stock.plan.line',
         None, None, 'Comes From'), 'get_from_lines')
+    final_lines = fields.Function(fields.Many2Many('stock.plan.line',
+        None, None, 'Final Lines'), 'get_final_lines')
+    initial_lines = fields.Function(fields.Many2Many('stock.plan.line',
+        None, None, 'Initial Lines'), 'get_initial_lines')
+
+    def get_final_lines(self, name):
+        pool = Pool()
+        PlanLine = pool.get('stock.plan.line')
+
+        lines = set(self.to_lines)
+        visited = set()
+        finals = set()
+        while lines:
+            current = lines.pop()
+            if current in visited:
+                continue
+            visited.add(current)
+            if not current.destination:
+                continue
+            to_lines = current.destination.to_lines
+            if hasattr(current.destination_document, 'to_lines'):
+                to_lines += current.destination_document.to_lines
+            if to_lines:
+                lines.update(to_lines)
+            else:
+                finals.add(current)
+        return PlanLine.browse(list(finals))
+
+    def get_initial_lines(self, name):
+        pool = Pool()
+        PlanLine = pool.get('stock.plan.line')
+        StockMove = pool.get('stock.move')
+
+        lines = set(self.from_lines)
+        visited = set()
+        initials = set()
+        while lines:
+            current = lines.pop()
+            if current in visited:
+                continue
+            visited.add(current)
+            from_lines = []
+            if isinstance(current.source, StockMove):
+                from_lines += current.source.from_lines
+                if hasattr(current.source_document, 'from_lines'):
+                    from_lines += current.source_document.from_lines
+            if from_lines:
+                lines.update(from_lines)
+            else:
+                initials.add(current)
+        return PlanLine.browse(list(initials))
 
 
 class Production(StockMixin, metaclass=PoolMeta):
