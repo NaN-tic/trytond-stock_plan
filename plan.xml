@@ -13,6 +13,19 @@
             <field name="name">stock_plan_line_tree</field>
         </record>
 
+        <record model="ir.ui.view" id="view_stock_plan_line_tree_from">
+            <field name="model">stock.plan.line</field>
+            <field name="priority" eval="20"/>
+            <field name="type">tree</field>
+            <field name="name">stock_plan_line_tree_from</field>
+        </record>
+        <record model="ir.ui.view" id="view_stock_plan_line_tree_to">
+            <field name="model">stock.plan.line</field>
+            <field name="priority" eval="20"/>
+            <field name="type">tree</field>
+            <field name="name">stock_plan_line_tree_to</field>
+        </record>
+
             <!-- Actions -->
         <record model="ir.action.act_window" id="act_stock_plan_line">
             <field name="name">Stock Plan Lines</field>

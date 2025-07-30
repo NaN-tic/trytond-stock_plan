@@ -1,24 +1,37 @@
 #
+# albert, 2025.
 msgid ""
 msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: albert\n"
+"PO-Revision-Date: 2025-07-30 18:23+0200\n"
 "Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: Ismael Marcos Martínez <ismael.marcos@nan-tic.com>\n"
-"Language-Team: \n"
-"Language: es\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Language-Team: Catalan <>\n"
+"Language: ca_ES\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.2.2\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 22.12.3\n"
+
+msgctxt "field:production,final_lines:"
+msgid "Final Lines"
+msgstr "Líneas finales"
 
 msgctxt "field:production,from_lines:"
 msgid "Comes From"
 msgstr "Procede de"
 
+msgctxt "field:production,initial_lines:"
+msgid "Initial Lines"
+msgstr "Líneas iniciales"
+
 msgctxt "field:production,to_lines:"
 msgid "Goes To"
 msgstr "Irá hacia"
+
+msgctxt "field:stock.move,final_lines:"
+msgid "Final Lines"
+msgstr "Líneas finales"
 
 msgctxt "field:stock.move,from_lines:"
 msgid "Comes From"
@@ -27,6 +40,10 @@ msgstr "Procede de"
 msgctxt "field:stock.move,from_stock_moves:"
 msgid "Comes From (Stock Moves)"
 msgstr "Prodece de (movimiento de existencias)"
+
+msgctxt "field:stock.move,initial_lines:"
+msgid "Initial Lines"
+msgstr "Líneas iniciales"
 
 msgctxt "field:stock.move,party:"
 msgid "Party"
@@ -124,41 +141,81 @@ msgctxt "field:stock.plan.line,uom:"
 msgid "UoM"
 msgstr "UdM"
 
+msgctxt "field:stock.shipment.in,final_lines:"
+msgid "Final Lines"
+msgstr "Líneas finales"
+
 msgctxt "field:stock.shipment.in,from_lines:"
 msgid "Comes From"
 msgstr "Procede de"
+
+msgctxt "field:stock.shipment.in,initial_lines:"
+msgid "Initial Lines"
+msgstr "Líneas iniciales"
 
 msgctxt "field:stock.shipment.in,to_lines:"
 msgid "Goes To"
 msgstr "Irá hacia"
 
+msgctxt "field:stock.shipment.in.return,final_lines:"
+msgid "Final Lines"
+msgstr "Líneas finales"
+
 msgctxt "field:stock.shipment.in.return,from_lines:"
 msgid "Comes From"
 msgstr "Procede de"
+
+msgctxt "field:stock.shipment.in.return,initial_lines:"
+msgid "Initial Lines"
+msgstr "Líneas iniciales"
 
 msgctxt "field:stock.shipment.in.return,to_lines:"
 msgid "Goes To"
 msgstr "Irá hacia"
 
+msgctxt "field:stock.shipment.internal,final_lines:"
+msgid "Final Lines"
+msgstr "Líneas finales"
+
 msgctxt "field:stock.shipment.internal,from_lines:"
 msgid "Comes From"
 msgstr "Procede de"
+
+msgctxt "field:stock.shipment.internal,initial_lines:"
+msgid "Initial Lines"
+msgstr "Líneas iniciales"
 
 msgctxt "field:stock.shipment.internal,to_lines:"
 msgid "Goes To"
 msgstr "Irá hacia"
 
+msgctxt "field:stock.shipment.out,final_lines:"
+msgid "Final Lines"
+msgstr "Líneas finales"
+
 msgctxt "field:stock.shipment.out,from_lines:"
 msgid "Comes From"
 msgstr "Procede de"
+
+msgctxt "field:stock.shipment.out,initial_lines:"
+msgid "Initial Lines"
+msgstr "Líneas iniciales"
 
 msgctxt "field:stock.shipment.out,to_lines:"
 msgid "Goes To"
 msgstr "Irá hacia"
 
+msgctxt "field:stock.shipment.out.return,final_lines:"
+msgid "Final Lines"
+msgstr "Líneas finales"
+
 msgctxt "field:stock.shipment.out.return,from_lines:"
 msgid "Comes From"
 msgstr "Procede de"
+
+msgctxt "field:stock.shipment.out.return,initial_lines:"
+msgid "Initial Lines"
+msgstr "Líneas iniciales"
 
 msgctxt "field:stock.shipment.out.return,to_lines:"
 msgid "Goes To"
@@ -248,20 +305,19 @@ msgid "All"
 msgstr "Todo"
 
 msgctxt ""
-"model:ir.action.act_window.domain,name:"
-"act_plan_line_relate_domain_late_stock"
+"model:ir.action.act_window.domain,name:act_plan_line_relate_domain_late_stock"
 msgid "Late Stock"
 msgstr "Existencias tardías"
 
 msgctxt ""
-"model:ir.action.act_window.domain,name:"
-"act_plan_line_relate_domain_surplus_stock"
+"model:ir.action.act_window.domain,name:act_plan_line_relate_domain_surplus_sto"
+"ck"
 msgid "Excess Stock"
 msgstr "Exceso de existencias"
 
 msgctxt ""
-"model:ir.action.act_window.domain,name:"
-"act_plan_line_relate_domain_without_stock"
+"model:ir.action.act_window.domain,name:act_plan_line_relate_domain_without_sto"
+"ck"
 msgid "Without Stock"
 msgstr "Sin stock"
 
@@ -318,8 +374,8 @@ msgstr ""
 
 msgctxt "model:ir.message,text:msg_warn_line_without_source"
 msgid ""
-"You tried to open related source lines, but the current line does not have "
-"a source."
+"You tried to open related source lines, but the current line does not have a"
+" source."
 msgstr ""
 "Intentó abrir líneas de procedencia relacionadas, pero la línea actual no "
 "tiene una procedencia."
