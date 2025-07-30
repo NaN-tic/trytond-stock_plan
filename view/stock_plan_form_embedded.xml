@@ -4,8 +4,10 @@ this repository contains the full copyright notices and license terms. -->
 <data>
     <xpath expr="/form/notebook" position="inside">
         <page id="stock_planning" string="Planning">
-            <field name="from_lines" colspan="2"/>
-            <field name="to_lines" colspan="2"/>
+            <field name="from_lines" colspan="2" view_ids="stock_plan.view_stock_plan_line_tree_from"/>
+            <field name="to_lines" colspan="2" view_ids="stock_plan.view_stock_plan_line_tree_to"/>
+            <field name="initial_lines" colspan="2"/>
+            <field name="final_lines" colspan="2"/>
         </page>
     </xpath>
 </data>
