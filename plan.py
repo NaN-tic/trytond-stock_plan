@@ -422,6 +422,9 @@ class StockPlanLine(ModelSQL, ModelView):
         Action = pool.get('ir.action')
         ModelData = pool.get('ir.model.data')
 
+        if not lines:
+            return
+
         encoder = PYSONEncoder()
         line = lines[0]
 
