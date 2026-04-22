@@ -1,9 +1,11 @@
 import unittest
 from datetime import datetime
+from unittest.mock import patch
 from proteus import Model
 from trytond.tests.test_tryton import drop_db
 from trytond.tests.tools import activate_modules
 from trytond.modules.company.tests.tools import create_company, get_company
+from trytond.modules.stock.move import Move
 from trytond.modules.stock.exceptions import MoveOriginWarning
 from decimal import Decimal
 
@@ -17,6 +19,9 @@ class Test(unittest.TestCase):
         drop_db()
 
     def test(self):
+        _ = patch.object(
+            Move, 'on_change_with_assignation_required',
+            return_value=False).start()
         config = activate_modules(['stock', 'stock_plan'])
 
         ProductUom = Model.get('product.uom')
