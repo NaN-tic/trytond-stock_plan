@@ -264,7 +264,8 @@ class StockPlan(Workflow, ModelSQL, ModelView):
                 remain_quantity = move.internal_quantity
 
                 if key in stocks:
-                    quantity = min(remain_quantity, stocks[key])
+                    quantity = move.product.default_uom.round(
+                        min(remain_quantity, stocks[key]))
                     remain_quantity -= quantity
                     stocks[key] -= quantity
                     if stocks[key] <= 0:
@@ -286,7 +287,8 @@ class StockPlan(Workflow, ModelSQL, ModelView):
                         break
                     income = incoming[key][0]
 
-                    quantity = min(remain_quantity, income['quantity'])
+                    quantity = move.product.default_uom.round(
+                        min(remain_quantity, income['quantity']))
                     remain_quantity -= quantity
                     income['quantity'] -= quantity
                     if income['quantity'] <= 0:
@@ -307,7 +309,8 @@ class StockPlan(Workflow, ModelSQL, ModelView):
                 # WITHOUT STOCK: Move without destination
                 if remain_quantity > 0:
                     lines.append(
-                        StockPlanLine(plan=plan, quantity=remain_quantity,
+                        StockPlanLine(plan=plan, quantity=
+                            move.product.default_uom.round(remain_quantity),
                             destination=move, product=move.product,
                             destination_date=(
                                 move.effective_date or move.planned_date
@@ -316,7 +319,9 @@ class StockPlan(Workflow, ModelSQL, ModelView):
             # EXCESS STOCK: Create for each existing stock at warehouse
             if plan.include_excess_stock:
                 lines.extend([
-                    StockPlanLine(plan=plan, quantity=stock_quantity,
+                    StockPlanLine(plan=plan,
+                        quantity=Product(key[1]).default_uom.round(
+                            stock_quantity),
                         source=warehouse, product=Product(key[1]))
                     for key, stock_quantity in stocks.items()
                     if key[0] == warehouse.id
@@ -325,7 +330,9 @@ class StockPlan(Workflow, ModelSQL, ModelView):
         # EXCESS STOCK: Create for each existing incomes
         if plan.include_excess_stock:
             lines.extend([
-                StockPlanLine(plan=plan, quantity=income['quantity'],
+                StockPlanLine(plan=plan,
+                    quantity=income['ref'].product.default_uom.round(
+                        income['quantity']),
                     source=income['ref'], product=income['ref'].product,
                     source_date=income['ref'].effective_date or income['ref'].planned_date)
                 for incomes in incoming.values()
@@ -358,7 +365,7 @@ class StockPlanLine(ModelSQL, ModelView):
         required=True, ondelete='CASCADE')
     product = fields.Many2One('product.product', 'Product',
         required=True, ondelete='CASCADE')
-    quantity = fields.Integer('Quantity', required=True)
+    quantity = fields.Float('Quantity', digits='uom', required=True)
     uom = fields.Function(fields.Many2One('product.uom', 'UoM',
         help='The Unit of Measure for the quantities.'), 'get_uom')
 
