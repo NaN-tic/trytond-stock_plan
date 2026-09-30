@@ -261,13 +261,14 @@ class StockPlan(Workflow, ModelSQL, ModelView):
             moves = outgoing[warehouse]
             for move in moves:
                 key = (warehouse.id, move.product.id)
+                uom = move.product.default_uom
                 remain_quantity = move.internal_quantity
 
                 if key in stocks:
-                    quantity = move.product.default_uom.round(
-                        min(remain_quantity, stocks[key]))
-                    remain_quantity -= quantity
-                    stocks[key] -= quantity
+                    quantity = uom.round(min(remain_quantity, stocks[key]))
+                    remain_quantity = uom.round(
+                        remain_quantity - quantity)
+                    stocks[key] = uom.round(stocks[key] - quantity)
                     if stocks[key] <= 0:
                         stocks.pop(key)
 
@@ -287,10 +288,12 @@ class StockPlan(Workflow, ModelSQL, ModelView):
                         break
                     income = incoming[key][0]
 
-                    quantity = move.product.default_uom.round(
+                    quantity = uom.round(
                         min(remain_quantity, income['quantity']))
-                    remain_quantity -= quantity
-                    income['quantity'] -= quantity
+                    remain_quantity = uom.round(
+                        remain_quantity - quantity)
+                    income['quantity'] = uom.round(
+                        income['quantity'] - quantity)
                     if income['quantity'] <= 0:
                         incoming[key].remove(income)
 
@@ -310,7 +313,7 @@ class StockPlan(Workflow, ModelSQL, ModelView):
                 if remain_quantity > 0:
                     lines.append(
                         StockPlanLine(plan=plan, quantity=
-                            move.product.default_uom.round(remain_quantity),
+                            uom.round(remain_quantity),
                             destination=move, product=move.product,
                             destination_date=(
                                 move.effective_date or move.planned_date
